@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/swiper.css" />
+    <style>
+        .head {
+            position: relative;
+            height: 10rem;
+        }
+        .head .photo img {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+
+            height: 10rem;
+        }
+
+        .head .photo .aui-btn {
+            position: absolute;
+            top: 0;
+            margin-left: 0.5rem;
+            margin-top: 0.5rem;
+            font-size: 1rem;
+            color: #948574;
+        }
+        .aui-btn.aui-btn-light:active{
+            background: none;
+        }
+        .denglu {
+            background: #FFF6EF;
+            font-size: 1rem;
+            color: #B68F60;
+            text-align: center;
+            line-height: 2.5rem;
+        }
+
+        .connect {
+            background: #fff;
+            padding: 0 1rem;
+        }
+
+        .connect input::-webkit-input-placeholder,
+        textarea::-webkit-input-placeholder {
+            color: #E7E7E7;
+            font-size: 0.6rem;
+        }
+
+        .connect input {
+            padding-left: 1rem;
+        }
+
+        .connect .input_password {
+            margin-right: auto;
+        }
+
+        .forget {
+            font-size: 0.6rem;
+            color: #999999;
+            padding: 1rem;
+        }
+
+        .next {
+            background: #AE804E;
+            font-size: 0.8rem;
+            color: #FAF6F1;
+            text-align: center;
+            line-height: 2rem;
+            border-radius: 1rem;
+            margin: 1rem;
+        }
+
+        .regist {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            font-size: 0.75rem;
+            color: #B99568;
+            line-height: 2rem;
+        }
+    </style>
+</head>
+
+<body style="background:#fff;">
+    <div id="app">
+        <div class="head" id="head">
+            <div class="photo">
+                <img src="../image/bg.png" alt="">
+                <div class="aui-btn aui-btn-inline aui-btn-light aui-btn-sm">
+                    <i class="aui-iconfont aui-icon-left" tapmode onclick="api.closeWin()"></i>
+                </div>
+            </div>
+        </div>
+        <div class="denglu">手机号登录</div>
+        <div class="aui-list aui-list-noborder">
+            <div class="aui-list-item">
+                <div class="aui-list-item-left">
+                    <i class="aui-iconfont aui-icon-mobile"></i>
+                </div>
+                <div class="aui-list-item-center">
+                    <input class="aui-input" type="tel" v-model="postData.mobile" placeholder="请输入手机号">
+                </div>
+            </div>
+            <div class="aui-list-item">
+                <div class="aui-list-item-left">
+                    <i class="aui-iconfont aui-icon-lock"></i>
+                </div>
+                <div class="aui-list-item-center">
+                    <input class="aui-input" type="tel" v-model="postData.code" placeholder="短信验证码">
+                </div>
+                <div class="aui-list-item-right getCode ready" tapmode onclick="getCode();">获取验证码</div>
+            </div>
+        </div>
+        <!-- <div class="forget aui-flex-col aui-flex-right">忘记密码？</div> -->
+        <div class="next" v-tap="[login]">登录</div>
+        <div class="regist" tapmode onclick="openRegister();">注册新账号</div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/swiper.min.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/vue-tap.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="../script/dom7.js"></script>
+<script type="text/javascript" src="../script/aui-toast.js"></script>
+<script type="text/javascript">
+    var toast = new auiToast();
+    var vuedata = {
+        postData: {
+            mobile: '',
+            code: '',
+        }
+
+    };
+    var vm = new Vue({
+        el: '#app',
+        data: vuedata,
+        methods: {
+            login: function() {
+                if (!vuedata.postData.mobile) {
+                    toast.fail({
+                        title: '请输入手机号码'
+                    })
+                    return;
+                }
+                if (!vuedata.postData.code) {
+                    toast.fail({
+                        title: '请输入验证码'
+                    })
+                    return;
+                }
+                api.ajax({
+                    url: BASE_URL + '/App/User/login',
+                    method: 'post',
+                    data: {
+                        values: vuedata.postData
+                    }
+                }, function(ret, err) {
+                    if (ret && ret.code == 1) {
+                        $api.setStorage('userid', ret.data.userid);
+                        $api.setStorage('group_id', ret.data.group_id);
+                        $api.setStorage('spread_no', ret.data.spread_no);
+                        toast.success({
+                            title: '登录成功'
+                        })
+                        api.sendEvent({
+                            name: 'loginSuccessEvent'
+                        });
+                        setTimeout(function() {
+                            api.closeWin();
+                        }, 1000)
+                    } else {
+                        toast.fail({
+                            title: "登录失败"
+                        })
+                    }
+                });
+            }
+        }
+    });
+    apiready = function() {
+        $$('#head .aui-btn').css('top',(api.safeArea.top-10) + 'px');
+        api.parseTapmode();
+    };
+    //发送验证码
+    function getCode() {
+        if (!$$('.getCode').hasClass('ready')) {
+            return;
+        }
+        if (!vuedata.postData.mobile) {
+            toast.fail({
+                title: '请输入手机号码'
+            })
+            return;
+        }
+        $$('.getCode').removeClass('ready');
+        api.ajax({
+            url: BASE_URL + '/App/User/sendSms',
+            method: 'post',
+            data: {
+                values: {
+                    mobile: vuedata.postData.mobile,
+                    source: 1
+                }
+            }
+        }, function(ret, err) {
+            if (ret && ret.code == 1) {
+                toast.success({
+                    title: '发送成功'
+                })
+                times = 59;
+                isinerval = setInterval("CountDown()", 1000);
+            } else {
+                $$('.getCode').addClass('ready');
+            }
+        });
+
+    }
+
+    function CountDown() {
+        if (times < 1) {
+            $$('.getCode').addClass('ready');
+            $$('.getCode').text('重新获取');
+            clearInterval(isinerval);
+            return;
+        }
+        $$('.getCode').text(times);
+        times--;
+    }
+
+    function openRegister() {
+        api.openWin({
+            name: 'register',
+            url: 'register.html'
+        });
+    }
+</script>
+
+</html>

@@ -1,0 +1,336 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width" />
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../css/swiper.css" />
+    <style>
+        .comVideoList .videoItem {
+            background-color: #FFF;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .comVideoList .videoItem .videoTtl {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            z-index: 5;
+            color: #FFF;
+            padding: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .comVideoList .videoItem .poster {
+            position: relative;
+        }
+
+        .comVideoList .videoItem .poster:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(360deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.4) 100%);
+            z-index: 1;
+        }
+
+        .comVideoList .videoItem .poster:after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 50px;
+            height: 50px;
+            background: url(../image/common/play.png);
+            background-size: 100% 100%;
+            -webkit-transform: translate(-50%, -30%);
+            transform: translate(-50%, -30%);
+        }
+
+        .comVideoList .videoItem .poster img {
+            width: 100%;
+        }
+
+        .comVideoList .videoInfo {
+            height: 2.25rem;
+            padding: 0 0.75rem;
+            font-size: 0.7rem;
+            color: #666;
+        }
+
+        .comVideoList .iconfont {
+            font-size: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="comVideoList">
+            <div class="videoItem" v-for="(it,index) in rows" :key=index>
+                <div class="videoTtl aui-ellipsis-2" v-text="it.name"></div>
+                <div @click="fxVideo(it.name,it.id,it.video_url,it.cover,index)" class="fx-video-content poster" :id='index'>
+
+                    <img :src="it.cover" alt="">
+                </div>
+                <div v-tap="[openDetail,it.id]" class="videoInfo aui-flex-col aui-flex-middle">
+                    <div class="aui-flex-col flex-auto"><span v-text="it.play_count || 0"></span>次播放
+                        <div class="aui-px-10">评分<span v-text="it.score"></span></div>
+                    </div>
+
+                    <div class="iconfont icon-favor aui-margin-r-15" v-if="it.is_collect !=1" v-tap.stop="[doCollect,it]"></div>
+                    <div class="iconfont icon-favorfill aui-margin-r-15 color-red" v-if="it.is_collect==1" v-tap.stop="[doCollect,it]"></div>
+                    <div class="iconfont icon-evaluate aui-margin-r-5"></div>
+                    <div v-text="it.score || 0"></div>
+                </div>
+                <template v-if="it.data_type == 'adv'">
+                    <div class="adBox aui-margin-t-10 aui-margin-b-10">
+                        <div class="photo" v-tap="[openAd,it.url]"><img :src="it.image" width="100%" alt=""></div>
+                        <div class="name aui-py-5 aui-px-10" v-text="it.title"></div>
+                    </div>
+                </template>
+            </div>
+
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/dom7.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/vue-tap.js"></script>
+<script type="text/javascript" src="../script/swiper.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="../script/zepto.min.js"></script>
+<script type="text/javascript" src="../script/doT.js"></script>
+<script type="text/javascript" src="../script/ffxiang.js"></script>
+<script type="text/javascript" src="../script/aui-toast.js"></script>
+<script type="text/javascript">
+    var toast = new auiToast();
+    var vuedata = {
+        rows: [],
+        adData: [],
+        playModule: '',
+        playStatus:-1,
+        todayPlayCount:0
+    };
+    var vm = new Vue({
+        el: '#app',
+        data: vuedata,
+        methods: {
+            openDetail: function (movieId) {
+                api.openWin({
+                    name: 'video_detail_win',
+                    url: 'video_detail_win.html',
+                    reload: true,
+                    slidBackEnabled: false,
+                    pageParam: {
+                        movieId: movieId
+                    }
+                });
+            },
+            fxVideo: function(title, movieId, url, pic, index) {
+                toast.loading({
+                    title: '加载中'
+                })
+                var postData = {};
+                postData.movieId = movieId;
+                var userid = $api.getStorage('userid');
+                if (userid) {
+                    postData.userid = userid;
+                }
+                api.ajax({
+                    url: BASE_URL + '/App/Movie/movieDetail',
+                    method: 'post',
+                    data: {
+                        values: postData
+                    }
+                }, function(ret, err) {
+                    toast.hide();
+                    if (ret) {
+                        vuedata.row = ret.data;
+                        api.sendEvent({
+                            name: 'playMovieEvent'
+                        });
+                        if (userid) {
+                            if (ret.data.today_play_status == 1) {
+                                openVideo(ret.data.video_url,ret.data.name,index);
+                            } else {
+                                api.alert({
+                                    title: '消息',
+                                    msg: '今日播放次数已经用完啦',
+                                }, function(ret, err) {
+                                });
+                            }
+                        } else {
+                            // 游客
+                            var visitorEveryDayCount = $api.getStorage('visitorEveryDayCount');
+                            var visitorPlayCount = $api.getStorage('visitorPlayCount');
+                            if (visitorPlayCount >= visitorEveryDayCount) {
+                                api.alert({
+                                    title: '消息',
+                                    msg: '今日播放次数已经用完啦',
+                                }, function(ret, err) {
+                                });
+                            } else {
+                                $api.setStorage('visitorPlayCount', parseInt(visitorPlayCount) + 1);
+                                openVideo(ret.data.video_url,ret.data.name,index)
+                            }
+                        }
+
+
+                    }
+                });
+
+            }
+        },
+
+    });
+    function playVideo(title, movieId, url, pic, index) {
+
+
+    }
+    function openVideo(videoUrl,title,index) {
+        var y = $("#" + index).offset().top;
+        // console.log($("#"+index).offset().top)
+        // var y=$().offset().top;
+        var h = $("#" + index).height();
+        onsgaodu = y + h;
+        vuedata.playModule.init({
+            // background: pic,
+        })
+        vuedata.playModule.play({
+            rect: {
+                x: 0,
+                y: y,
+                w: api.winWidth,
+                h: h
+            },
+            fixedOn: api.frameName,
+            fixed: false,
+            title: title,
+            url: videoUrl,
+            defaultBtn: true,
+            enableFull: false,
+            isTopView: true,
+            isFullBtn: true,
+            isSmallOpenGesture: false,
+            isOpenGesture: true,
+            isBackBtn: false,
+            isShowSpeed: true,
+            isLongShowBackBtn: true,
+            isOpenDanmu: false,
+            isSmallImmerse: true,
+            isLive: false,
+            isShowProcessView: true,
+            isAutoPlay: true
+        }, function (ret, err) {
+
+        });
+    }
+    var playModule;
+    apiready = function () {
+        playModule = api.require('playModule');
+        vuedata.playModule = playModule;
+        api.parseTapmode();
+        getData();
+        //下拉刷新
+        api.setCustomRefreshHeaderInfo({
+            bgColor: '#262626',
+            images: loading_img,
+            tips: {
+                pull: '你…你想干什么！要刷新数据就拉到位！',
+                threshold: '讨厌 快放开我 非礼呀！',
+                load: '正在刷新数据，请等待...'
+            }
+        }, function () {
+            getData();
+        });
+        api.addEventListener({
+            name:'closevideo'
+          },function(ret,err){
+               hidePlayer();
+            });
+    }
+
+    var onsgaodu = 0;
+    window.onscroll = function () {
+        var t = document.documentElement.scrollTop || document.body.scrollTop;
+        if (onsgaodu) {
+            if (t > onsgaodu) {
+                hidePlayer();
+                onsgaodu = 0
+            }
+        }
+    }
+
+    function hidePlayer() {
+        vuedata.playModule.stop();
+    }
+
+    function getData() {
+        var postData = {};
+        postData.userid = $api.getStorage('userid');
+        api.ajax({
+            url: BASE_URL + '/App/Movie/findList',
+            method: 'post',
+            data: {
+                values: postData
+            }
+        }, function (ret, err) {
+            api.refreshHeaderLoadDone();
+            if (ret) {
+                vuedata.rows = ret.data.data;
+            }
+        });
+
+        // getAd();
+    }
+    //获取广告
+    // function getAd() {
+    //     api.ajax({
+    //         url: BASE_URL + '/App/Ad/index',
+    //         method: 'post',
+    //         data: {
+    //             values: {
+    //                 pos_id: 4
+    //             }
+    //         }
+    //     }, function (ret, err) {
+    //         if (ret && ret.code == 1) {
+    //             vuedata.adData = ret.data;
+    //         }
+    //     });
+    //
+    // }
+
+//收藏
+    function doCollect(it) {
+        var postData = {};
+        postData.userid = $api.getStorage('userid');
+        postData.movieId = it.id;
+        api.ajax({
+            url: BASE_URL + '/app/Movie/collectAdd',
+            method: 'post',
+            data: {
+                values: postData
+            }
+        }, function(ret, err) {
+            if (ret) {
+                toast(ret.msg);
+                Vue.set(it,'is_collect',ret.code);
+            }
+        });
+    }
+</script>
+
+</html>

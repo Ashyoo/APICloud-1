@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/common.css">
+    <style>
+    #header .aui-iconfont {
+        color: #D8B383;
+    }
+
+    #header .aui-title,
+    .aui-header-right {
+        color: #D8B383;
+    }
+    .aui-btn.aui-btn-outline {
+        color: #ad8755;
+        background: transparent;
+    }
+    .aui-btn.aui-btn-outline:after {
+        border: 1px solid #ad8755;
+    }
+    .footer_1{
+      padding-bottom:0.5rem;
+    }
+    </style>
+</head>
+
+<body>
+    <header class="aui-header-bar" id="header">
+        <div class="aui-header-left" tapmode onclick="api.closeWin();"><i class="aui-iconfont aui-icon-left"></i></div>
+        <div class="aui-title">推广</div>
+        <div class="aui-header-right aui-font-size-14" tapmode onclick="openWin('mine_extension_win');">我的推广</div>
+    </header>
+    <footer class="aui-footer-bar" id="footer">
+        <div class=" footer_1 aui-footer-bar-item aui-padded-t-10" tapmode onclick="openWin('spread_code_win')">
+            <div class="aui-btn aui-btn-outline aui-btn-round" style="width:80%; margin:0 auto; font-size:0.8rem;">我要推广</div>
+        </div>
+    </footer>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/dom7.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        api.parseTapmode();
+        $api.fixStatusBar($api.byId('header'));
+        $api.fixTabBar($api.byId('footer'));
+        var headerH = $api.offset($api.byId('header')).h;
+        var footerH = $api.offset($api.byId('footer')).h;
+        api.openFrame({
+            name: 'spread_frm',
+            url: 'spread_frm.html',
+            rect: {
+                x: 0,
+                y: headerH,
+                marginBottom:footerH,
+                w: 'auto'
+            },
+            pageParam: api.pageParam
+        });
+    }; //apiready结束
+</script>
+
+</html>

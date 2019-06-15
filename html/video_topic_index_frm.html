@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/swiper.css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+    <style>
+        body {
+            background: #323232;
+            color: #FFF;
+        }
+
+        .head {
+            padding: 0.75rem;
+        }
+
+        .head .head-ttl {
+            font-size: 0.75rem;
+            padding: 0.5rem 0;
+        }
+
+        .headSlider .swiper-slide {
+            width: 70%;
+        }
+
+        .headSlider .swiper-box {
+            background: #fff;
+            color: #000;
+            border-radius: 5px;
+        }
+
+        .headSlider .swiper-box img {
+            width: 3rem;
+            border-radius: 50%;
+            padding: 0.5rem;
+        }
+
+        .headSlider .swiper-box .ttl {
+            font-size: 0.8rem;
+        }
+
+        .headSlider .swiper-box .time {
+            font-size: 0.6rem;
+            color: #9B9B9B;
+        }
+
+        .headSlider .swiper-box .middle-box {
+            margin: 0 0.5rem;
+            padding: 0 0 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .headSlider .swiper-box .bottom-box .text {
+            width: 4rem;
+            height: 1.5rem;
+            background: #B28452;
+            border-radius: 1rem;
+            font-size: 0.6rem;
+            color: #FFF;
+            text-align: center;
+            line-height: 1.5rem;
+            margin: 0.5rem;
+        }
+
+        .topSlider {
+            padding: 0.75rem;
+        }
+
+        .topSlider .swiper-container {
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .topSlider .swiper-pagination {
+            position: static;
+        }
+
+        .topSlider .swiper-pagination-bullet {
+            width: 5px;
+            height: 5px;
+            margin: 0 5px;
+            background: #FFF;
+            opacity: 0.5;
+        }
+
+        .topSlider .swiper-pagination-bullet-active {
+            opacity: 1;
+        }
+
+        .aui-card-list {
+            background: none;
+        }
+
+        .aui-card-list-header {
+            color: #f2f2f2;
+        }
+
+        .text-bold {
+            font-weight: 500;
+        }
+
+        p {
+            color: #c5c5c5;
+        }
+
+        img.topic-icon {
+            width: 60px;
+            height: 60px;
+            display: block;
+            margin: 0 auto;
+            border-radius: 50%;
+        }
+
+        .actor-wrap {
+
+            background: none;
+            color: #ffffff;
+        }
+        .actor-wrap .aui-list-item-media{
+            width: 3rem !important;
+        }
+        .text-white {
+            color: #ffffff;
+        }
+        .actor-movie {
+            width: calc( 100vw - 0.5rem);
+            overflow: auto;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+        }
+        .actor-movie::-webkit-scrollbar {
+            display: none;
+        }
+        .actor-movie .movie-item {
+            width: 30vw;
+            display: inline-block;
+            font-size: 0.7rem;
+            text-align: center;
+        }
+        .actor-movie .movie-item img {
+            width: 100%;
+        }
+        .actor-border {
+            border-top: 1px solid #252525;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+
+        <div class="aui-card-list">
+            <ul class="aui-card-list-content aui-padded-t-10 aui-padded-b-10">
+                <div class="aui-row">
+                    <div class="aui-col aui-col-span-6 aui-text-center" v-for="it in topicDatas" v-tap="[openTopic,it.id,it.name]">
+                        <img :src="it.cover" class="topic-icon">
+                        <p class="aui-font-size-12 aui-padded-t-10" v-text="it.name"></p>
+                    </div>
+                </div>
+            </ul>
+        </div>
+
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/dom7.js"></script>
+<script type="text/javascript" src="../script/swiper.min.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/vue-tap.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+    var vuedata = {
+        topicDatas: []
+    };
+    var vm = new Vue({
+        el: '#app',
+        data: vuedata,
+        methods:{
+            openTopic:function(id,name){
+                api.openWin({
+                    name: 'video_topic_list_win',
+                    url: 'video_topic_list_win.html',
+                    pageParam: {
+                        topicId: id,
+                        title:name
+                    }
+                });
+            }
+        }
+    });
+
+
+    apiready = function() {
+        api.parseTapmode();
+        getTopicData();
+    };
+
+    function getTopicData() {
+        api.ajax({
+            url: BASE_URL + '/App/Movie/topicList',
+            method: 'post'
+        }, function(ret, err) {
+            if (ret) {
+                vuedata.topicDatas = ret.data;
+            }
+        });
+
+    }
+</script>
+
+</html>

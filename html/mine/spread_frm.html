@@ -1,0 +1,286 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/common.css">
+    <style>
+        .bg {
+            position: relative;
+            width: 100%;
+            height: 10rem;
+            overflow: hidden;
+        }
+        .bg:after {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 10rem;
+            left: 0;
+            top: -5.8rem;
+            margin-left: -25%;
+            border-radius: 200%;
+            background: #323232;
+        }
+        .wrap {
+            position: relative;
+            top: -8.5rem;
+        }
+        .progress img {
+            display: block;
+            width: 40%;
+            margin: 0 auto;
+        }
+        .task{
+            border: 2px #F1F1F1 solid;
+            border-radius: 0.25rem;
+            margin:0 -0.1rem 0.8rem -0.1rem;
+            padding-left: 0.5rem;
+            background:white;
+        }
+        .task .ttl{
+            font-size: 0.8rem;
+            color: #AD7D45;
+            padding: 0.5rem 0;
+        }
+        .task .text{
+            font-size: 0.6rem;
+            padding-bottom: 0.5rem;
+        }
+        .aui-progress {
+            margin-top: 10px;
+        }
+        .user-info,
+        .user-info .aui-list {
+            background-color: #d4b68c;
+        }
+        .text-orange {
+            color: #ad8755;
+        }
+        .text-white {
+            color: #ffffff;
+        }
+        .aui-progress-inner {
+            background-color: #e7d0b1;
+        }
+        .aui-progress-bg {
+            background-color: #ae8857;
+        }
+        .count big {
+            font-size: 1.2rem;
+        }
+        .welfare-task{
+            border: 1px #F1F1F1 solid;
+            border-radius: 0.25rem;
+            background:white;
+            margin-bottom:-7rem;
+        }
+        .welfare-task .ttl{
+            font-size: 0.8rem;
+            color: #AD7D45;
+            padding: 0.5rem;
+        }
+        .welfare-task .box{
+            border: 1px #FDEEDB solid;
+            margin: 0.5rem;
+            border-radius: 0.25rem;
+        }
+        .welfare-task .box .top{
+            background: #FDEEDB;
+            padding: 0.5rem;
+            font-size: 0.8rem;
+            color: #AD7D45;
+        }
+        .welfare-task .box .bottom{
+            padding: 0.5rem;
+            font-size: 0.6rem;
+        }
+        .welfare-task .box span{
+            color: #AD7D45;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="bg"></div>
+        <div class="wrap aui-padded-10">
+            <div class="aui-card-list user-info">
+                <div class="aui-card-list-content">
+                    <div class="aui-list aui-list-noborder">
+                        <div class="aui-list-item">
+                            <div class="aui-list-item-left">
+                                <div class="aui-list-item-media" style="width:3rem;">
+                                <img :src="user.avatar" />
+                                </div>
+                            </div>
+                            <div class="aui-list-item-center">
+                                <div class="aui-list-item-title text-orange" v-text="user.mobile"></div>
+                                <div class="aui-list-item-subtitle text-orange">我的邀请码<span v-text="user.spread_no"></span></div>
+                            </div>
+                            <div class="aui-list-item-right" tapmode onclick="openWin('spread_code_win')">
+                                <div class="aui-list-item-media">
+                                <img src="../../image/common/icon_er.png" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="aui-row aui-row-gutter progress aui-text-center aui-padded-t-15 aui-padded-b-15">
+                            <div class="aui-col aui-col-span-5">
+                                <img :src="user.groupData.icon" />
+                                <p class="text-orange" v-text="user.groupData.desc"></p>
+                            </div>
+                            <div class="aui-col aui-col-span-14">
+                                <div class="aui-progress aui-progress-normal">
+                                    <div class="aui-progress-outer">
+                                        <div class="aui-progress-inner">
+                                            <div class="aui-progress-bg" style="width: 25%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-white">距离下一等级还差{{user.next_spread_count}}人</p>
+                            </div>
+                            <div class="aui-col aui-col-span-5">
+                                <img :src="user.nextGroupData.icon" />
+                                <p class="text-white" v-text="user.nextGroupData.desc">L2进阶</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="aui-card-list">
+                <div class="aui-card-list-content-padded">
+                    <div class="aui-row aui-text-center count">
+                        <div class="aui-col aui-col-span-12">
+                            <big class="aui-text-warning" v-text="user.today_play_count"></big>
+                            <p>今日已观影次数</p>
+                        </div>
+                        <div class="aui-col aui-col-span-12">
+                            <big class="aui-text-danger" v-text="user.total_play_count-user.today_play_count">12</big>
+                            <p>剩余观影次数</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="task">
+                <div class="ttl">每日任务</div>
+                <div class="text">每日点击广告，当日观影次数+999，次数不累计</div>
+            </div>
+            <div class="aui-card-list">
+                <div class="aui-card-list-header">推广任务</div>
+                <div class="aui-card-list-content-padded">
+                    <p>规则说明：推广给好友成功下载APP并打开注册时好友填写邀请码，可持续增加每日观影次数及缓存次数。每日缓存次数通推广人数。</p>
+                </div>
+                <div class="aui-card-list-content">
+                    <div class="aui-list aui-list-noborder">
+                        <div class="aui-list-item" v-for="it in groupTask">
+                            <div class="aui-list-item-left">
+                                <div class="aui-list-item-media" style="width:3rem;">
+                                <img :src="it.icon" />
+                                </div>
+                            </div>
+                            <div class="aui-list-item-center">
+                                <div class="aui-list-item-title aui-font-size-16 text-orange" v-text="it.name"></div>
+                                <div class="aui-list-item-subtitle aui-margin-t-10">
+                                    <span>推广</span>
+                                    <span class="text-orange" v-text="it.invite_num"></span>
+                                    <span>人-每日观影次数</span>
+                                    <span class="text-orange" v-text="it.play_num"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="welfare-task" v-if="taskList.length">
+                <div class="ttl">福利任务</div>
+                <div class="box" v-for="(it,i) in taskList">
+                    <div class="top">{{i+1}}.<span v-text="it.name"></span></div>
+                    <div class="bottom" v-text="it.content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/dom7.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/vue-tap.js"></script>
+<script type="text/javascript" src="../../script/aui-toast.js"></script>
+<script type="text/javascript">
+    var toast = new auiToast();
+    var vuedata = {
+        userid:false,
+        user:{},
+        groupTask:[],
+        taskList:[]
+    };
+    var vm = new Vue({
+        el: '#app',
+        data: vuedata,
+    });
+    apiready = function() {
+        api.parseTapmode();
+        getUserData();
+        getGroupTask();
+        getTask();
+    }; //apiready结束
+    function getUserData(){
+        var userid = $api.getStorage('userid');
+        if(!userid){
+            return;
+        }
+        toast.loading({
+            title:'加载中'
+        })
+        var postData = {};
+        postData.userid = userid;
+        api.ajax({
+            url: BASE_URL+'/App/User/detail',
+            method: 'post',
+            data: {
+                values: postData
+            }
+        },function(ret, err){
+            toast.hide();
+            if (ret) {
+                vuedata.user = ret.data;
+            }
+        });
+
+    }
+    function getGroupTask(){
+        var postData = {};
+        api.ajax({
+            url: BASE_URL+'/App/User/userGroups',
+            method: 'post',
+            data: {
+                values: postData
+            }
+        },function(ret, err){
+            if (ret) {
+                vuedata.groupTask = ret.data;
+            }
+        });
+    }
+    function getTask(){
+        var postData = {};
+        api.ajax({
+            url: BASE_URL+'/App/Movie/taskList',
+            method: 'post',
+            data: {
+                values: postData
+            }
+        },function(ret, err){
+            if (ret) {
+                vuedata.taskList = ret.data;
+            }
+        });
+    }
+
+</script>
+
+</html>

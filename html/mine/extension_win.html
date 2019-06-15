@@ -1,0 +1,98 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width" />
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/swiper.css">
+    <style>
+        #header {
+            background: #262626;
+        }
+
+        #header .aui-iconfont {
+            color: #D8B383;
+        }
+
+        #header .aui-title {
+            color: #D8B383;
+        }
+        #header .aui-pull-right{
+            font-size: 0.6rem;
+        }
+        #footer{
+          position:fixed;
+          bottom:0;
+          width:100%;
+          background:white;
+          text-align:center;
+        }
+        #footer .text{
+            border: 1px #D8B383 solid;
+            border-radius: 1rem;
+            padding: 0.25rem;
+            margin: 0.5rem 1.5rem;
+            font-size: 0.75rem;
+            color: #D8B383;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="aui-header-bar" id="header">
+        <div class="aui-header-left" tapmode onclick="api.closeWin()">
+            <span class="aui-iconfont aui-icon-left"></span>
+        </div>
+        <div class="aui-title">账户管理</div>
+        <div class="aui-header-right" tapmode onclick="mine_extension()">我的推广</div>
+    </header>
+    <footer class="aui-bar aui-bar-tab" id="footer">
+            <div class="text">立即推广</div>
+    </footer>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/dom7.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/vue-tap.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript" src="../../script/swiper.min.js"></script>
+<script type="text/javascript">
+    apiready = function () {
+        api.parseTapmode();
+        $api.fixStatusBar($api.byId('header'));
+        $api.fixTabBar($api.byId('footer'));
+        var headerH = $api.offset($api.byId('header')).h;
+        var footerH = $api.offset($api.byId('footer')).h;
+        api.openFrame({
+            name: 'extension',
+            url: 'extension_frm.html',
+            rect: {
+                x: 0,
+                y: headerH,
+                w: 'auto',
+                h: 'auto',
+                marginBottom: footerH
+            },
+            bounces: true,
+            pageParam: api.pageParam
+        });
+    };
+
+    function mine_extension(){
+      api.openWin({
+          name: 'mine_extension',
+          url: 'mine_extension_win.html',
+          pageParam: {
+              name: 'test'
+          }
+      });
+    }
+</script>
+
+</html>

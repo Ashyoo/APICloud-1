@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width" />
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+    <style>
+        #header {
+            background: #2D2B38;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <header class="aui-bar aui-bar-nav aui-bar-light" id="header">
+            <div class="aui-pull-left aui-btn" tapmode onclick="api.closeWin();">
+                <span class="aui-iconfont aui-icon-left"></span>
+            </div>
+            <!-- <div class="aui-title"></div> -->
+        </header>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/dom7.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/vue-tap.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+    var vuedata = {};
+    var vm = new Vue({
+        el: '#app',
+        data: vuedata,
+        methods: {}
+    });
+    apiready = function() {
+        api.parseTapmode();
+        $api.fixStatusBar($api.byId('header'));
+        var headerH = $api.offset($api.byId('header')).h;
+        api.openFrame({
+            name: 'actor_detail_frm',
+            url: 'actor_detail_frm.html',
+            rect: {
+                x: 0,
+                y: headerH,
+                w: 'auto',
+                h: 'auto',
+            },
+            bounces: true,
+            pageParam: api.pageParam
+        });
+    };
+</script>
+
+</html>

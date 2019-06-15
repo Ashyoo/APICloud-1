@@ -1,0 +1,766 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>首页</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../css/swiper.min.css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+    <style>
+        body {
+            background: #ffffff;
+        }
+        .aui-grid [class*=aui-col-] {
+            padding: 0;
+        }
+        .aui-btn {
+            background: #f5f5f5;
+            color: #b4b4b4;
+        }
+        .aui-btn.ji {
+            color: #757575;
+            font-size: 0.8rem;
+            height: 2.5rem;
+            line-height: 2.5rem;
+            padding: 0 0.9rem;
+        }
+        .desc {
+            background: #f5f5f5;
+        }
+
+        .desc .aui-list {
+            background: none;
+        }
+
+        .text-orange {
+            color: #d3b790;
+        }
+
+        .aui-list .aui-list-item-media img {
+            display: block;
+            margin: 0;
+            width: 100%;
+        }
+
+        .title {
+            font-weight: 500;
+        }
+
+        .playcount {
+            color: #999999;
+            padding-top: 0.5rem;
+        }
+
+        .aui-list.comment .aui-list-item-left {
+            -webkit-box-align: start;
+            -webkit-align-items: start;
+            align-items: start;
+        }
+        .aui-list.comment .aui-list-item-title {
+            -webkit-align-self: flex-start;
+            align-self: flex-start;
+        }
+        .aui-list.comment .aui-list-item-subtitle {
+            -webkit-align-self: flex-end;
+            align-self: flex-end;
+        }
+
+        img.icon {
+            display: block !important;
+            position: relative !important;
+            width: 1rem !important;
+            float: left;
+            margin-left: 1rem;
+        }
+        .zan>i {
+            font-size: 1.2rem;
+            padding-right: 0.75rem;
+        }
+        .cai i {
+            font-size: 1.2rem;
+        }
+        #collect{
+          font-size:1rem;
+          color:black;
+        }
+        .zan-text {
+            color: #d3b790;
+            font-size: 0.5rem;
+        }
+        .aui-progress-bg {
+            background-color: #d3b790;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <section class="aui-content" style="margin-top:260px;">
+            <div class="aui-card-list">
+                <div class="aui-card-list-header aui-padded-b-0">
+                    <div style="width:60%;"><span class="aui-font-size-20 text-bold" v-text="row.name"></span></div>
+                    <div class="" style="width:40%;">
+                        <div class="aui-row aui-row-gutter">
+                            <div class="aui-col aui-col-span-4">
+                                <div class="zan" tapmode onclick="doLaud()"><i id="zan1" class="  iconfont icon-appreciate_light" :class="{'red': row.is_laud==1}"></i></div>
+                            </div>
+                            <div class="aui-col aui-col-span-14 aui-padded-l-5 aui-padded-r-5">
+                                <div class="aui-progress aui-progress-normal">
+                                    <div class="aui-progress-outer">
+                                        <div class="aui-progress-inner">
+                                            <div class="aui-progress-bg" :style="{ width: row.laud_scale+'%'}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="zan-text aui-text-center"><span v-text="row.laud_scale"></span>%人觉得很赞</p>
+                            </div>
+                            <div class="aui-col aui-col-span-4">
+                                <div class="cai" tapmode onclick="dingcai(-1)"><i id="cai1" class="iconfont icon-oppose_light"></i></div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="aui-card-list-footer aui-padded-t-0">
+                    <div>
+                        <span v-text="row.createtime"></span>
+                        <span>·</span>
+                        <span v-text="row.play_count"></span>次播放 评分
+                        <span v-text="row.score"></span>
+                    </div>
+                </div>
+                <div class="aui-card-list-content desc" v-if="row.desc">
+                    <div class="aui-list">
+                        <div class="aui-list-item">
+                            <div class="aui-list-item-center">
+                                <div class="aui-ellipsis-2" v-text="row.desc"></div>
+                            </div>
+                            <div class="aui-list-item-right text-orange aui-hide">
+                                <div style="width:40px !important;">简介</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="aui-card-list-footer aui-border-b">
+                    <div>
+                        <i class="aui-iconfont aui-icon-comment aui-font-size-14"></i> <span v-text="row.comment_count"></span>评论
+                    </div>
+                    <div class = "aui-flex-col aui-flex-middle">
+                        <!-- <img src="../image/like2.png" class="icon" tapmode onclick="doLaud()" v-if="row.is_laud == 1" />
+                        <img src="../image/like.png" class="icon" tapmode onclick="doLaud()" v-else/> -->
+                        <img src="../image/cache.png" v-if="!isDownOver" class="icon" tapmode onclick="huancun()" />
+                        <img src="../image/cache2.png" v-if="isDownOver" class="icon" />
+                        <img src="../image/share.png" class="icon" tapmode onclick="doshare()" />
+                    </div>
+                </div>
+            </div>
+            <div class="topSlider aui-margin-b-10" v-show="adData && adData.length">
+                <div class="swiper-container">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide" v-if="it.image" v-for="it in adData" v-tap="[openAd,it.url]"><img :src="it.image" width="100%" alt=""></div>
+                    </div>
+                </div>
+            </div>
+            <div class="aui-card-list aui-margin-b-15">
+                <div class="aui-card-list-header">
+                    <div class="card-title text-bold">猜你喜欢</div>
+                </div>
+                <div class="aui-card-list-content">
+                    <div class="aui-list aui-list-tb-noborder">
+                        <div class="aui-list-item aui-list-in" v-for="it in likeRows" v-tap="[openDetail,it.id]">
+                            <div class="aui-list-item-left">
+                                <div class="aui-list-item-media cover" style="width:6rem;">
+                                    <img :src="it.cover" />
+                                </div>
+
+                            </div>
+                            <div class="aui-list-item-center">
+                                <div class="aui-list-item-title aui-font-size-16 title" v-text="it.name"></div>
+                                <div class="aui-list-item-subtitle playcount"><span v-text="it.play_count"></span>次播放</div>
+                                <div class="aui-list-item-subtitle ">评分<span v-text="it.score"></span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="aui-card-list">
+                <div class="aui-card-list-header aui-border-b">
+                    <div class="aui-text-danger"><i class="aui-iconfont aui-icon-comment aui-font-size-14 aui-margin-r-5"></i>热门评论</div>
+                </div>
+                <div class="aui-card-list-content">
+                    <div class="no-data aui-py-15" v-if="comment.length < 1">
+                        <img src="../image/common/nocomment.png" style="height: 50px;width: auto; margin: 0 auto;">
+                        <p class="aui-text-center aui-margin-b-15">暂无评论</p>
+                    </div>
+                    <div class="aui-list comment aui-list-noborder" v-else>
+                        <div class="aui-list-item aui-margin-b-15" v-for="(it,i) in comment">
+                            <div class="aui-list-item-left">
+                                <!-- <img :src="it.avatar" class="aui-img-round" style="width:2.1rem;"> -->
+                                <div class="avatar" style="width: 2rem;height: 2rem;"><img :src="it.avatar"></div>
+                            </div>
+                            <div class="aui-list-item-center font-size-17">
+                                <div class="aui-list-item-title nickname" v-text="it.nickname"></div>
+                                <div class="aui-list-item-subtitle margin-t-8 text-light aui-font-size-12" v-text="it.createtime"></div>
+                                <div class="aui-list-item-subtitle aui-font-size-16 aui-margin-t-10" v-html="it.content"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/swiper.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="../script/aui-toast.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/vue-tap.js"></script>
+<script type="text/javascript">
+    var vuedata = {
+        movieId: '',
+        listMode: 1,
+        row: {},
+        comment: [],
+        likeRows: [],
+        adData: [],
+        isDownOver: false
+    };
+    var vm = new Vue({
+        el: '#app',
+        data: vuedata,
+        methods: {
+            openDetail: function(movieId) {
+                api.openWin({
+                    name: 'video_detail_win',
+                    url: 'video_detail_win.html',
+                    reload: true,
+                    slidBackEnabled: false,
+                    pageParam: {
+                        movieId: movieId
+                    }
+                });
+
+            }
+        }
+    });
+    var toast = new auiToast();
+    var playModule;
+    var movieId;
+    var pageNo = 1,
+        pageSize = 20;
+    var loadStaus = false;
+    var m3u8CacheServer;
+    apiready = function() {
+        api.parseTapmode();
+        vuedata.movieId = api.pageParam.movieId;
+        playModule = api.require('playModule');
+        playModule.init({
+            isShowBottomBtn: true
+        });
+        getData();
+        getLikeData();
+        getCommentData();
+        getAd();
+
+        m3u8CacheServer = api.require('m3u8CacheServer');
+        m3u8CacheServer.startServer(function(ret) {});
+
+        m3u8CacheServer.addEventListener(function(ret) {
+            if(ret.evenType == 'onDownloadSuccess'){
+                vuedata.isDownOver = true;
+                var postData = {};
+                postData['userid'] = $api.getStorage('userid');
+                postData['movieId'] = vuedata.movieId;
+                postData['videoId'] = ret.videoId;
+                api.ajax({
+                    url: BASE_URL+'/App/Movie/cacheUpdate',
+                    method: 'post',
+                    data: {
+                        values: postData
+                    }
+                },function(ret, err){
+                });
+            }
+        });
+
+    }
+
+    //点击下载按钮  增加缓存记录
+    function doDownload() {
+        api.ajax({
+            url: BASE_URL + '/App/Movie/increaseCaching',
+            method: 'post',
+            data: {
+                values: {
+                    userid: $api.getStorage('userid'),
+                    movie_id: vuedata.movieId
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == 1) {
+                    api.toast({
+                        msg: '开始缓存',
+                        duration: 2000,
+                        location: 'middle'
+                    });
+                    huancun();  //模块下载视频
+                } else {
+                    api.toast({
+                        msg: ret.msg,
+                        duration: 2000,
+                        location: 'middle'
+                    });
+                }
+
+            } else {
+                api.toast({
+                    msg: '系统异常',
+                    duration: 2000,
+                    location: 'middle'
+                });
+            }
+        });
+
+    }
+    //缓存视频
+    function huancun() {
+        m3u8CacheServer.startServer(function(ret,err) {
+            if (ret && ret.status) {
+                m3u8CacheServer.start({
+                    url: vuedata.row.video_url
+                }, function(res, err) {
+                    if (res && ret.status) {
+
+                        if(res.videoId){
+                            var postData = {};
+                            postData['userid'] = $api.getStorage('userid');
+                            postData['movieId'] = vuedata.movieId;
+                            postData['videoUrl'] = vuedata.row.video_url;
+                            postData['videoId'] = res.videoId;
+                            api.ajax({
+                                url: BASE_URL+'/App/Movie/cacheAdd',
+                                method: 'post',
+                                data: {
+                                    values: postData
+                                }
+                            },function(ret, err){
+                                api.addEventListener({
+                                    name: 'updateUserDetailEvent'
+                                }, function(ret, err){
+                                });
+                            });
+                        }
+
+                        api.toast({
+                            msg: '开始缓存',
+                            duration: 2000,
+                            location: 'middle'
+                        });
+                    } else {
+                        api.toast({
+                            msg: '系统异常1',
+                            duration: 2000,
+                            location: 'middle'
+                        });
+                    }
+                });
+            } else {
+                api.toast({
+                    msg: '系统异常2',
+                    duration: 2000,
+                    location: 'middle'
+                });
+            }
+        });
+    }
+    //点赞成功
+    function dingcai(t) {
+        var postData = {};
+        if(t == 1){
+            vuedata.row.top_count += 1;
+            postData.type = 'top';
+            document.getElementById('zan1').style.color = 'red';
+        }
+        if(t == -1){
+            vuedata.row.stamp_count += 1;
+            postData.type = 'stamp';
+            document.getElementById('cai1').style.color = 'red';
+        }
+        var count = vuedata.row.top_count+vuedata.row.stamp_count;
+        if(count <= 0){
+            vuedata.row.laud_scale = 0;
+        }else{
+            vuedata.row.laud_scale = parseInt((vuedata.row.top_count/count)*100);
+        }
+        if(vuedata.row.laud_scale > 100){
+            vuedata.row.laud_scale = 100;
+        }
+        postData.movieId = vuedata.movieId;
+        api.ajax({
+            url: BASE_URL + '/App/Movie/topAndStamp',
+            method: 'post',
+            data: {
+                values: postData
+            }
+        }, function(ret, err) {
+        });
+    }
+    //点菜成功
+    function cai() {
+        if (document.getElementById('cai1').style.color == 'red') {
+            api.toast({
+                msg: '您已点过了',
+                duration: 2000,
+                location: 'middle'
+            });
+            return;
+        }
+        document.getElementById('cai1').style.color = 'red';
+        api.toast({
+            msg: '点踩成功',
+            duration: 2000,
+            location: 'middle'
+        });
+    }
+    // 获取评论
+    function getCommentData() {
+        api.ajax({
+            url: BASE_URL + '/App/Movie/commentList',
+            method: 'post',
+            data: {
+                values: {
+                    movieId: vuedata.movieId,
+                    pageNo: pageNo,
+                    pageSize: pageSize
+                }
+            }
+        }, function(ret, err) {
+            toast.hide();
+            if (ret) {
+                if (ret.data) {
+                    if (ret.data.length < pageSize) {
+                        loadStaus = false;
+                    } else {
+                        pageNo += 1;
+                    }
+                    vuedata.comment = vuedata.comment.concat(ret.data)
+                } else {
+                    loadStaus = false;
+                }
+            }
+        });
+    }
+
+    function doCollect() {
+        var postData = {};
+        postData.userid = $api.getStorage('userid');
+        postData.movieId = vuedata.movieId;
+        api.ajax({
+            url: BASE_URL + '/app/Movie/collectAdd',
+            method: 'post',
+            data: {
+                values: postData
+            }
+        }, function(ret, err) {log(ret)
+            toast.hide();
+            if (ret) {
+                api.addEventListener({
+                    name: 'updateUserDetailEvent'
+                }, function(ret, err){
+                });
+                toast.success({
+                    title:ret.msg
+                })
+                api.execScript({
+                    name: 'video_detail_win',
+                    script: 'setCollect('+ret.code+');'
+                });
+            }
+        });
+    }
+    function doLaud() {
+        vuedata.row.laud_count += 1;
+        // postData.type = 'top';
+        document.getElementById('zan1').style.color = 'red';
+        var count = vuedata.row.laud_count+vuedata.row.stamp_count;
+        if(count <= 0){
+            vuedata.row.laud_scale = 0;
+        }else{
+            vuedata.row.laud_scale = parseInt((vuedata.row.laud_count/count)*100);
+        }
+        if(vuedata.row.laud_scale > 100){
+            vuedata.row.laud_scale = 100;
+        }
+        var postData = {};
+        postData.userid = $api.getStorage('userid');
+        postData.movieId = vuedata.movieId;
+        api.ajax({
+            url: BASE_URL + '/app/Movie/laud',
+            method: 'post',
+            data: {
+                values: postData
+            }
+        }, function(ret, err) {
+            toast.hide();
+            if (ret) {
+                api.addEventListener({
+                    name: 'updateUserDetailEvent'
+                }, function(ret, err){
+                });
+
+                toast.success({
+                    title:ret.msg
+                })
+                vuedata.row.is_laud = ret.code;
+            }
+        });
+    }
+    //分享
+    function doshare() {
+        // document.getElementById('share').style.color = 'red';
+        api.toast({
+            msg: '复制成功赶快分享吧！',
+            duration: 2000,
+            location: 'middle'
+        });
+    }
+    // 发布评论
+    function doComment(content, pid) {
+        var userid = $api.getStorage('userid');
+
+        if (!content) {
+            toast.fail({
+                title: '请输入评论内容'
+            })
+            return;
+        }
+        toast.loading({
+            title: '提交中'
+        })
+        var postData = {};
+        postData.userid = $api.getStorage('userid');
+        postData.movieId = vuedata.movieId;
+        postData.content = content;
+        if (pid) {
+            postData.pid = pid;
+        }
+        api.ajax({
+            url: BASE_URL + '/app/Movie/commentAdd',
+            method: 'post',
+            data: {
+                values: postData
+            }
+        }, function(ret, err) {
+            toast.hide();
+            if (ret) {
+
+                if (ret.code == 1) {
+                    toast.success({
+                        title: '评论成功'
+                    })
+                    vuedata.row.comment_count = parseInt(vuedata.row.comment_count) + 1;
+                    // api.execScript({
+                    //     name:'view_detail_win',
+                    //     script:'setCommentTotal('+vuedata.row.comment_count+');'
+                    // });
+                    setTimeout(function() {
+                        api.sendEvent({
+                            name: 'commentSuccessEvent'
+                        });
+                    }, 280)
+                    pageNo = 1;
+                    vuedata.comment = [];
+                    getCommentData();
+                }
+            }
+        });
+    }
+
+    function getData() {
+        toast.loading({
+            title: '加载中'
+        })
+        var postData = {};
+        postData.movieId = vuedata.movieId;
+        var userid = $api.getStorage('userid');
+        if (userid) {
+            postData.userid = userid;
+        }
+        api.ajax({
+            url: BASE_URL + '/App/Movie/movieDetail',
+            method: 'post',
+            data: {
+                values: postData
+            }
+        }, function(ret, err) {
+            toast.hide();
+            if (ret) {
+                vuedata.row = ret.data;
+                api.sendEvent({
+                    name: 'playMovieEvent'
+                });
+                api.execScript({
+                    name: 'video_detail_win',
+                    script: 'setCollect('+ret.data.is_collect+');'
+                });
+                m3u8CacheServer.isDownloadFinish({
+                    url : vuedata.row.video_url
+                }, function(ret, err) {
+                    if(ret && ret.status){
+                        vuedata.isDownOver = true;
+                    }
+                });
+                if (userid) {
+                    if (ret.data.today_play_status == 1) {
+                        // moviePlayer.replay({
+                        //     path : vuedata.row.video_url
+                        // })
+                        openVideo();
+                    } else {
+                        api.alert({
+                            title: '消息',
+                            msg: '今日播放次数已经用完啦',
+                        }, function(ret, err) {
+                            if (ret) {
+                                api.closeWin();
+
+                            }
+                        });
+                    }
+                } else {
+                    // 游客
+                    var visitorEveryDayCount = $api.getStorage('visitorEveryDayCount');
+                    var visitorPlayCount = $api.getStorage('visitorPlayCount');
+                    if (visitorPlayCount >= visitorEveryDayCount) {
+                        api.alert({
+                            title: '消息',
+                            msg: '今日播放次数已经用完啦',
+                        }, function(ret, err) {
+                            if (ret) {
+                                api.closeWin();
+
+                            }
+                        });
+                    } else {
+                        $api.setStorage('visitorPlayCount', parseInt(visitorPlayCount) + 1);
+                        openVideo()
+                    }
+                }
+
+
+            }
+        });
+
+    }
+
+    function getLikeData() {
+        var postData = {};
+        postData.movieId = vuedata.movieId;
+        api.ajax({
+            url: BASE_URL + '/App/Movie/movieList',
+            method: 'post',
+            data: {
+                values: postData
+            }
+        }, function(ret, err) {
+            if (ret) {
+                vuedata.likeRows = ret.data;
+            }
+        });
+
+    }
+
+    function openVideo() {
+        m3u8CacheServer.isDownloadFinish({
+            url : vuedata.row.video_url
+        }, function(ret, err) {
+            if(ret && ret.status){
+                var videoUrl = ret.data.localUrl;
+            }else{
+                var videoUrl = vuedata.row.video_url;
+            }
+            // console.log(videoUrl)
+            api.sendEvent({
+                name: 'playMovieEvent'
+            });
+
+            playModule.play({
+                rect: {
+                    x: 0,
+                    y: 0,
+                    w: api.frameWidth,
+                    h: 260
+                },
+                fixedOn: api.frameName,
+                fixed: true,
+                title: vuedata.row.name,
+                url: videoUrl,
+                defaultBtn: true,
+                enableFull: false,
+                isTopView: true,
+                isFullBtn: true,
+                isSmallOpenGesture: true,
+                isOpenGesture: true,
+                isBackBtn: true,
+                isShowSpeed: true,
+                isLongShowBackBtn: true,
+                isOpenDanmu: false,
+                isSmallImmerse: true,
+                isLive: false,
+                isShowProcessView: true,
+                isAutoPlay: true
+            }, function(ret, err) {
+                // toast.hide()
+                // console.log(JSON.stringify(ret))
+            });
+            playModule.addEventListener({
+                name: 'backBtn'
+            }, function(ret, err) {
+                if (ret) {
+                    api.closeWin();
+
+                }
+            });
+        });
+    }
+    sliderInit();
+
+
+    function sliderInit() {
+        new Swiper(' .topSlider .swiper-container', {
+            observer: true,
+            observeParents: true,
+            observeSlideChildren: true
+        });
+
+
+    }
+
+    function getAd() {
+        api.ajax({
+            url: BASE_URL + '/App/Adv/index',
+            method: 'post',
+            data: {
+                values: {
+                    pos_id: 6
+                }
+            }
+        }, function(ret, err) {
+            if (ret && ret.code == 1) {
+                vuedata.adData = ret.data.advData;
+            }
+        });
+
+    }
+</script>
+
+</html>

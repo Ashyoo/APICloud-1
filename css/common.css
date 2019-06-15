@@ -1,0 +1,516 @@
+
+@import url(iconfont.css);
+
+body {
+  color: #333;
+  background-color: #f5f5f5;
+}
+#header {
+	background: #323232;
+}
+#header .aui-title {
+	font-size: 0.8rem;
+	left: 4rem;
+	right: 4rem;
+}
+#header .aui-pull-left,
+#header .aui-pull-right {
+	padding: 0 0.75rem;
+	height: 2.2rem;
+	font-size: 0.8rem;
+}
+#header .aui-iconfont {
+	font-size: 0.75rem;
+    color: #DCB482;
+}
+.color-main {
+    color: #DCB482 !important;
+}
+.bg-main {
+    background-color: #DCB482 !important;
+}
+.border-main {
+    border-color: #DCB482 !important;
+}
+.color-fff {
+	color: #FFF !important;
+}
+.color-000 {
+	color: #000 !important;
+}
+.color-333 {
+	color: #3c3c3c !important;
+}
+.color-666 {
+	color: #6c6c6c !important;
+}
+.color-999 {
+	color: #9c9c9c !important;
+}
+.color-orange {
+    color: #C38766 !important;
+}
+.color-blue {
+	color: #0066CC !important;
+}
+.color-red {
+	color: #FF3333 !important;
+}
+.bg-none {
+	background: none !important;
+}
+.bg-fff {
+	background-color: #FFF !important;
+}
+.bg-f5{
+	background-color: #f5f5f5 !important;
+}
+.bg-orange {
+    background-color: #C38766 !important;
+}
+.bg-blue {
+	background-color: #0066CC !important;
+}
+.bg-red {
+	background-color: #FF3333 !important;
+}
+.aui-font-size-19 {
+    font-size: 0.95rem !important;
+}
+.aui-font-size-17 {
+    font-size: 0.85rem !important;
+}
+.aui-font-size-15 {
+    font-size: 0.75rem !important;
+}
+.aui-font-size-13 {
+    font-size: 0.65rem !important;
+}
+.aui-font-size-11 {
+	font-size: 0.55rem !important;
+}
+.aui-font-size-10 {
+	font-size: 0.5rem !important;
+}
+.text-bold {
+    font-weight: bold !important;
+}
+.line-height {
+	line-height: 1;
+}
+.line-height-m {
+	line-height: 1.5;
+}
+.inline {
+	display: inline-block;
+}
+.radius {
+	border-radius: 50%;
+}
+.radius-btn {
+    border-radius: 150px;
+}
+
+.aui-margin-b-6 {
+	margin-bottom: 0.3rem;
+}
+
+.aui-padded-r-20 {
+	padding-right: 1rem !important;
+}
+.aui-padded-r-30 {
+	padding-right: 1.5rem !important;
+}
+
+.aui-py-0 {
+	padding-top: 0 !important;
+	padding-bottom: 0 !important;
+}
+.aui-px-0 {
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+.aui-py-5 {
+	padding-top: 0.25rem !important;
+	padding-bottom: 0.25rem !important;
+}
+.aui-py-10 {
+	padding-top: 0.5rem !important;
+	padding-bottom: 0.5rem !important;
+}
+.aui-py-15 {
+	padding-top: 0.75rem !important;
+	padding-bottom: 0.75rem !important;
+}
+.aui-px-5 {
+	padding-left: 0.25rem !important;
+	padding-right: 0.25rem !important;
+}
+.aui-px-10 {
+	padding-left: 0.5rem !important;
+	padding-right: 0.5rem !important;
+}
+.aui-px-15 {
+	padding-left: 0.75rem !important;
+	padding-right: 0.75rem !important;
+}
+.clearfix:after {
+	height: 0;
+	visibility: hidden;
+	content: ".";
+	display: block;
+	clear: both;
+}
+.relative {
+	position: relative;
+}
+/* pc 谷歌浏览器 调试用 */
+.chrome .aui-border-t {
+    border-top: 1px solid #ddd;
+}
+.chrome .aui-border-b {
+    border-bottom: 1px solid #ddd;
+}
+.chrome .aui-border-r {
+    border-right: 1px solid #ddd;
+}
+.chrome .aui-border-l {
+    border-left: 1px solid #ddd;
+}
+/*  */
+.outline {
+	position: relative;
+}
+.outline:before {
+	content: "";
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 200%;
+	height: 200%;
+	border: 1px solid #ddd;
+	border-radius: 0.2rem;
+	-webkit-transform: translate(-50%,-50%) scale(0.5);
+	transform: translate(-50%,-50%) scale(0.5);
+	display: block !important;
+}
+/* 右边箭头	*/
+.right-arrow {
+	position: relative;
+}
+.right-arrow:before {
+	display: block;
+	content: '';
+	width: 0.4rem;
+	height: 0.4rem;
+	position: absolute;
+	top: 50%;
+	right: 0.1rem;
+	margin-top: -0.2rem;
+	background: transparent;
+	border: 1px solid #ccc;
+	border-top: none;
+	border-right: none;
+	z-index: 2;
+	-webkit-border-radius: 0;
+	border-radius: 0;
+	-webkit-transform: rotate(-135deg);
+	transform: rotate(-135deg);
+}
+.border-none {
+    border: none;
+	background-image: none;
+}
+.firstNoBorder > *:first-child {
+	border: none;
+	background-image: none;
+}
+.lastNoBorder > *:last-child {
+	border: none;
+	background-image: none;
+}
+.firstNoMargin > *:first-child {
+	margin-top: 0 !important;
+}
+.lastNoMargin > *:last-child {
+	margin-bottom: 0 !important;
+}
+.bgCover {
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: cover;
+}
+.border-t {
+	border-top: 1px solid #f2f2f2;
+}
+.border-r {
+	border-right: 1px solid #f2f2f2;
+}
+.border-b {
+	border-bottom: 1px solid #f2f2f2;
+}
+.border-l {
+	border-left: 1px solid #f2f2f2;
+}
+
+.aui-input,
+input[type="text"],
+input[type="password"],
+input[type="search"],
+input[type="email"],
+input[type="tel"],
+input[type="url"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="time"],
+input[type="number"],
+select,
+textarea {
+	color: #6c6c6c;
+	font-size: 0.9rem;
+}
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+    color:#999;
+}
+
+.comSec {
+	margin-bottom: 0.5rem;
+	position: relative;
+	background-color: #FFF;
+	padding: 0 0.75rem;
+}
+.comItem {
+	position: relative;
+	background-color: #FFF;
+	padding: 0.25rem 0.75rem;
+	min-height: 2.5rem;
+}
+.comFlexItem {
+	position: relative;
+	background-color: #FFF;
+	min-height: 2.5rem;
+
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-wrap: wrap;
+	flex-wrap: wrap;
+
+	-webkit-box-orient: horizontal;
+	-webkit-box-direction: normal;
+	-webkit-flex-direction: row;
+	flex-direction: row;
+
+	-webkit-box-pack: justify;
+	-webkit-justify-content: space-between;
+	justify-content: space-between;
+
+
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	align-items: center;
+}
+.height-40 {
+	min-height: 2rem;
+}
+.height-45 {
+	min-height: 2.25rem;
+}
+.height-50 {
+	min-height: 2.5rem;
+}
+
+.topFix {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	z-index: 5;
+}
+.btmFix {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	z-index: 5;
+}
+/* 底部按钮 */
+.comBtmBtn {
+	color: #FFF;
+	font-size: 0.8rem;
+	text-align: center;
+	line-height: 2.5rem;
+	background: #C38766;
+	border-radius: 1.25rem;
+}
+.comBtmBtn.noRadius {
+	border-radius: 0;
+}
+/*头像*/
+.avatar {
+	width: 2rem;
+	height: 2rem;
+	border-radius: 50%;
+	overflow: hidden;
+	position: relative;
+}
+.avatar img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+/* vue过渡效果 */
+.fade-enter-active, .fade-leave-active {
+	transition: opacity .3s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+	opacity: 0;
+}
+
+/* iconfont */
+.iconfont {
+	font-size: 0.8rem;
+}
+
+/*输入框的删除按钮*/
+.inputDel {
+	position: absolute;
+	right: 0.25rem;
+	top: 50%;
+	width: 1.5rem;
+	height: 1.5rem;
+	margin-top: -0.75rem;
+	background: url(../image/common/close.png) no-repeat center center;
+	background-size: 0.8rem;
+}
+
+/* 半透明背景 */
+.popOverlay {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,0.5);
+	z-index: 10;
+}
+
+
+.comH2Ttl {
+    padding: 0 1.7rem;
+    position: relative;
+    font-size: 0.7rem;
+    color: #000;
+    line-height: 2.5rem;
+}
+.comH2Ttl:before {
+    content: '';
+    position: absolute;
+    left: 0.8rem;
+    top: 50%;
+    width: 0.35rem;
+    height: 0.35rem;
+    border-radius: 50%;
+    background: #C38766;
+    margin-top: -0.175rem;
+}
+
+/* 关注按钮 */
+.comFollowBtn {
+    color: #666;
+    font-size: 0.6rem;
+    line-height: 1.1rem;
+    min-width: 2.65rem;
+    text-align: center;
+    padding: 0 0.25rem;
+    border: 1px solid #D2D2D2;
+}
+.comFollowBtn.on {
+    color: #fff;
+    border-color: #C38766;
+    background: #C38766;
+}
+
+/* 空数据 */
+.nodata {
+	height: 70vh;
+	color: #6c6c6c;
+	font-size: 0.9rem;
+	text-align: center;
+}
+.nodata img {
+    margin: 0 auto;
+	height: 4rem;
+}
+.nodata .txt {
+	padding: 0.5rem 0;
+}
+.nodata .btn {
+	color: #FFF;
+	background: #00B792;
+	min-width: 5rem;
+	padding: 0 0.5rem;
+	line-height: 1.9rem;
+	font-size: 0.8rem;
+	border-radius: 0.2rem;
+}
+/* 到底了 */
+.noMoreData {
+	padding: 0.5rem 0;
+	font-size: 0.6rem;
+	color: #666;
+	text-align: center;
+}
+
+/* 搜索框 */
+.comSearchBar {
+    background: #ebeced;
+    padding: 0 0 0 0.5rem;
+    height: 2.2rem;
+}
+.comSearchBar .searchInner {
+    background: #FFF;
+    border-radius: 0.25rem;
+    height: 1.4rem;
+    padding: 0 1.25rem 0 0.5rem;
+    position: relative;
+}
+.comSearchBar .searchInput {
+    height: 1.4rem;
+    font-size: 0.6rem;
+}
+.comSearchBar .searchBtn {
+    padding: 0 0.5rem;
+    line-height: 2.2rem;
+}
+
+/* 自动适应高度textarea */
+.auto-height-textarea {
+	position: relative;
+}
+.auto-height-textarea .autoTxt {
+	display: block;
+	visibility: hidden;
+    min-height: 2.2rem;
+}
+.auto-height-textarea textarea {
+	position: absolute;
+	top: 0 !important;
+	left: 0 !important;
+	width: 100%;
+	height: 100%;
+	line-height: inherit;
+	text-indent: inherit;
+	letter-spacing: inherit;
+	resize:none;
+	overflow: hidden;
+}
+.auto-height-textarea .autoTxt,
+.auto-height-textarea textarea {
+	font-size: 0.7rem;
+	padding: 0.5rem 0;
+	line-height: 1.2rem;
+    color: #333;
+}

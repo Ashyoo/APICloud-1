@@ -1,0 +1,123 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width" />
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+    <style>
+        .searchBar {
+            background: #282828;
+            font-size: 0.6rem;
+            height: 1.4rem;
+            line-height: 1.4rem;
+            padding-left: 0.5rem;
+            color: #999;
+            margin-top: 8px;
+        }
+        .searchBar input {
+            font-size: 0.7rem;
+            height: 1.4rem;
+        }
+        .searchBtn {
+            color: #666;
+            font-size: 0.75rem;
+        }
+        .aui-searchbar {
+            background: transparent;
+        }
+        .aui-searchbar-input {
+            background: #282828;
+        }
+        .aui-searchbar-input input {
+            color: #dddddd;
+            width: 80%;
+            font-size: 0.6rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <header class="aui-header-bar" id="header">
+            <div class="aui-header-left" tapmode onclick="api.closeWin()">
+                <span class="aui-iconfont aui-icon-left"></span>
+            </div>
+            <div class="aui-title" style="left:2rem; right: 2rem;">
+                <div class="aui-searchbar" id="search">
+                    <div class="aui-searchbar-input aui-border-radius">
+                        <i class="aui-iconfont aui-icon-search"></i>
+                        <input type="search" v-model="keywords" placeholder="请输入搜索内容" id="search-input">
+                        <div class="aui-searchbar-clear-btn">
+                            <i class="aui-iconfont aui-icon-close"></i>
+                        </div>
+                    </div>
+                    <div class="aui-searchbar-btn" tapmode>取消</div>
+                </div>
+            </div>
+            <div class="aui-header-right" tapmode onclick="doSearch()">
+                搜索
+            </div>
+        </header>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/dom7.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/vue-tap.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+    var vuedata = {
+        keywords: ''
+    };
+    var vm = new Vue({
+        el: '#app',
+        data: vuedata,
+        methods: {
+            delSearch: function(){
+                vuedata.search = '';
+            }
+        }
+    });
+    apiready = function() {
+        api.parseTapmode();
+        $api.fixStatusBar($api.byId('header'));
+        var headerH = $api.offset($api.byId('header')).h;
+        api.openFrame({
+            name: 'search_index_frm',
+            url: 'search_index_frm.html',
+            rect: {
+                x: 0,
+                y: headerH,
+                w: 'auto',
+                h: 'auto',
+            },
+            bounces: true,
+            pageParam: api.pageParam
+        });
+    };
+    function doSearch(){
+        if(!vuedata.keywords){
+            api.alert({
+                title: '提示',
+                msg: '请输入搜索内容',
+            }, function(ret, err){
+                return;
+            });
+            return;
+
+        }
+        api.execScript({
+            frameName: 'search_index_frm',
+            script: 'doSearch("'+vuedata.keywords+'");'
+        });
+
+    }
+
+</script>
+
+</html>

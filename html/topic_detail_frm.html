@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width" />
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+    <style>
+        .desc {
+            padding: 0.5rem 0.5rem 0.25rem;
+            font-size: 0.75rem;
+        }
+        .photoList ul {
+            padding: 0.25rem;
+        }
+        .photoList li {
+            width: 33.333%;
+            padding: 0.25rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="mainImg"><img src="../image/demo/h6.jpg" width="100%" alt=""></div>
+        <div class="desc">2019大年初一笑到起飞！！！</div>
+        <div class="photoList">
+            <ul class="aui-flex-col">
+                <li v-for="it in 20">
+                    <div class="photo aui-margin-b-5"><img src="../image/demo/03.jpg" alt=""></div>
+                    <div class="ttl aui-ellipsis-1">2019大年初一笑到起飞！！！</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/dom7.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/vue-tap.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+var vuedata = {
+	
+};
+var vm = new Vue({
+	el: '#app',
+	data: vuedata,
+});
+    apiready = function () {
+        api.parseTapmode();
+    };
+
+</script>
+
+</html>

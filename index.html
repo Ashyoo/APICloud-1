@@ -1,0 +1,286 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="./css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="./css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="./css/swiper.css" />
+    <link rel="stylesheet" type="text/css" href="./css/common.css">
+    <style>
+        #topHeader, body {
+            background: #323232;
+        }
+        .header01 {
+            padding-left: 0.5rem;
+            height: 2.2rem;
+            box-sizing: content-box;
+        }
+        .header01 .searchBar {
+            background: #282828;
+            font-size: 0.6rem;
+            line-height: 1.6rem;
+            padding-left: 0.5rem;
+            color: #999;
+        }
+        .header01 .head-right {
+            margin: 0 0.5rem;
+        }
+        .header01 .head-right i {
+            margin: 0 0.25rem;
+            font-size: 1.2rem;
+        }
+        #homeFooter {
+            height: 2.5rem;
+            background: #404040;
+            font-size: 0.5rem;
+            color: #999;
+            overflow: hidden;
+            box-sizing: content-box;
+            border: none;
+        }
+        #homeFooter img {
+            height: 1.2rem;
+            width: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div id="topHeader">
+            <div class="header01 aui-flex-col aui-flex-middle" id="header01" v-show="page==0">
+                <div class="flex-auto aui-flex-col aui-flex-middle searchBar radius-btn" tapmode onclick="openSearch();">
+                    <i class="aui-iconfont aui-icon-search color-main"></i>
+                    <div class="aui-px-5 flex-auto aui-ellipsis">请输入搜索关键词</div>
+                </div>
+                <div class="head-right color-main">
+                    <i class="iconfont icon-down aui-hide" tapmode onclick=""></i>
+                    <i class="iconfont icon-time" tapmode onclick="openWidgetPage('video_record_win','mine/video_record_win.html');"></i>
+                    <i class="iconfont icon-scan" tapmode onclick="scanCode();"></i>
+                </div>
+            </div>
+            <div class="aui-header-bar" id="header" v-show="page==1 || page==2">
+                <div class="aui-title" v-text="pageTitle[page]"></div>
+                <div class="aui-header-right" tapmode onclick="openSearch();"><i class="aui-iconfont aui-icon-search color-main"></i></div>
+            </div>
+        </div>
+        <footer class="aui-footer-bar" id="homeFooter">
+            <div class="aui-footer-bar-item " :class="{ 'active' : page==0 }" tapmode onClick="openHome(0);">
+                <div class="icon aui-flex-col aui-flex-middle aui-flex-center">
+                    <img v-show="page==0" src="image/common/f_01_on.png" alt="">
+                    <img v-show="page!=0" src="image/common/f_01_off.png" alt="">
+                </div>
+                <div class="txt">首页</div>
+            </div>
+            <div class="aui-footer-bar-item " :class="{ 'active' : page==1 }" tapmode onClick="openHome(1);">
+                <div class="icon aui-flex-col aui-flex-middle aui-flex-center">
+                    <img v-show="page==1" src="image/common/f_02_on.png" alt="">
+                    <img v-show="page!=1" src="image/common/f_02_off.png" alt="">
+                </div>
+                <div class="txt">频道</div>
+            </div>
+            <div class="aui-footer-bar-item " :class="{ 'active' : page==2 }" tapmode onClick="openHome(2);">
+                <div class="icon aui-flex-col aui-flex-middle aui-flex-center">
+                    <img v-show="page==2" src="image/common/f_03_on.png" alt="">
+                    <img v-show="page!=2" src="image/common/f_03_off.png" alt="">
+                </div>
+                <div class="txt">发现</div>
+            </div>
+            <div class="aui-footer-bar-item" :class="{ 'active' : page==3 }" tapmode onClick="openHome(3);">
+                <div class="icon aui-flex-col aui-flex-middle aui-flex-center">
+                    <img v-show="page==3" src="image/common/f_04_on.png" alt="">
+                    <img v-show="page!=3" src="image/common/f_04_off.png" alt="">
+                </div>
+                <div class="txt">我的</div>
+            </div>
+        </footer>
+    </div>
+</body>
+<script type="text/javascript" src="./script/api.js"></script>
+<script type="text/javascript" src="./script/dom7.js"></script>
+<script type="text/javascript" src="./script/vue.js"></script>
+<script type="text/javascript" src="./script/vue-tap.js"></script>
+<script type="text/javascript" src="./script/common.js"></script>
+<script type="text/javascript" src="./script/swiper.min.js"></script>
+<script type="text/javascript">
+    var vuedata = {
+        userId: '',
+        page: 0,
+        headerH: 0,
+        footerH: 0,
+        pageTitle: ['首页', '专栏推荐', '发现', '我的']
+    };
+    var vm = new Vue({
+        el: '#app',
+        data: vuedata,
+        methods: {
+            // openHome:function(ind){
+            //     api.setFrameGroupIndex({
+            //         name: 'indexGroup',
+            //         index: ind,
+            //     });
+            //
+            // }
+        }
+    });
+    apiready = function() {
+        api.setStatusBarStyle({
+            style: 'light'
+        });
+
+        api.addEventListener({
+            name: 'logutEvent'
+        }, function(ret, err){
+            if( ret ){
+                visitorSetData()
+            }
+        })
+        api.parseTapmode();
+        $api.fixStatusBar($api.byId('header'));
+        $api.fixStatusBar($api.byId('header01'));
+        $api.fixTabBar($api.byId('homeFooter'));
+        vuedata.headerH = $api.offset($api.byId('topHeader')).h;
+        vuedata.footerH = $api.offset($api.byId('homeFooter')).h;
+
+        api.openFrameGroup({
+            name: 'indexGroup',
+            scrollEnabled: false,
+            rect: {
+                x: 0,
+                y: vuedata.headerH,
+                w: 'auto',
+                h: 'auto',
+                marginBottom: vuedata.footerH
+            },
+            index: 0,
+            frames: [{
+                name: 'home_page',
+                url: 'html/home_page.html',
+                bgColor: '#323232',
+                bounces: true
+            }, {
+                name: 'home_channel',
+                url: 'html/home_channel.html',
+                bgColor: '#323232',
+                bounces: true
+            }, {
+                name: 'home_find',
+                url: 'html/home_find.html',
+                bgColor: '#323232', //bgColor: '#FFF',
+                bounces: true
+            }, {
+                name: 'home_mine',
+                url: 'html/home_mine.html',
+                bgColor: '#323232',
+                bounces: false
+            }]
+        }, function(ret, err) {
+            vuedata.page = ret.index;
+            setTimeout(function() {
+                vuedata.headerH = $api.offset($api.byId('topHeader')).h;
+                if (vuedata.page == 3) {
+                    vuedata.headerH = 0;
+                }
+                api.setFrameGroupAttr({
+                    name: 'indexGroup',
+                    rect: {
+                        y: vuedata.headerH
+                    },
+                });
+            }, 5);
+
+        });
+        api.ajax({
+            url: BASE_URL + '/App/Movie/notice',
+            method: 'post'
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == 1) {
+                    // 打开公告
+                    api.openFrame({
+                        name: 'notice_frm',
+                        url: 'html/notice_frm.html',
+                        rect: {
+                            x: 0,
+                            y: 0,
+                            w: 'auto',
+                            h: 'auto'
+                        },
+                        bgColor: 'rgba(0,0,0,0.5)',
+                        bounces: false
+                    });
+                }
+            }
+        });
+
+
+
+    };
+    function visitorSetData(){
+        api.ajax({
+            url: BASE_URL+'/App/Movie/siteSet',
+            method: 'post'
+        },function(ret, err){
+            if (ret) {
+                $api.setStorage('visitorEveryDayCount', ret.data.visitor_play_count);
+                var visitorPlayCount = $api.getStorage('visitorPlayCount');
+                if (!visitorPlayCount) {
+                    visitorPlayCount = 0;
+                }
+                $api.setStorage('visitorPlayCount', visitorPlayCount);
+            }
+        });
+
+    }
+    function openHome(ind) {
+        var reload = false;
+        if(ind==3){
+            api.execScript({
+                name:'root',
+                frameName: 'home_mine',
+                script:'getUserData();'
+            });
+        }
+        api.setFrameGroupIndex({
+            name: 'indexGroup',
+            index: ind,
+            reload: reload
+        });
+        api.sendEvent({
+            name: 'closevideo'
+        });
+    }
+
+    function openSearch() {
+        api.openWin({
+            name: 'search_index_win',
+            url: 'html/search_index_win.html'
+        });
+    }
+
+    //扫码
+    function scanCode() {
+        var FNScanner = api.require('FNScanner');
+        FNScanner.open({
+            //hintText: ''
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.eventType == 'success') {
+                    // 数据是 ret.content
+                    if (ret.content) {
+
+                    }
+                }
+                if (ret.eventType == 'fail') {
+                    toast('扫码失败');
+                }
+            }
+        });
+    }
+</script>
+
+</html>

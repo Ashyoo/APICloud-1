@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no" />
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+    <style>
+        .info {
+            padding: 0.75rem;
+            padding-top: 3rem;
+            background: #fefaf4;
+            position: relative;
+        }
+        .info-title {
+            position: absolute;
+            top: 0.75rem;
+            left: 0;
+            background: #f4d6ab;
+            color: #ffffff;
+            height: 1rem;
+            line-height: 1rem;
+            padding: 0 0.5rem;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+        .aui-input {
+            border: 1px solid #eeeeee !important;
+            border-radius: 30px !important;
+            padding-left: 0.75rem !important;
+        }
+        .aui-btn,.aui-btn:active {
+            background: #ad8755;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <section>
+            <div class="aui-card-list">
+                <div class="aui-card-list-content-padded">
+                    <div class="info">
+                        <div class="info-title">规则说明</div>
+                        兑换后，立即获得相应奖励
+                    </div>
+                </div>
+                <div class="aui-card-list-content-padded">
+                    <input type="text" class="aui-input aui-font-size-14" v-model="card_no" placeholder="请输入16位激活码">
+                </div>
+                <div class="aui-card-list-content-padded">
+                    <div class="aui-btn aui-btn-block aui-btn-round" v-tap="[activateCard]">提交绑定</div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/dom7.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/vue-tap.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript" src="../../script/aui-toast.js"></script>
+<script type="text/javascript">
+    var toast = new auiToast();
+    var vuedata = {
+        card_no:''
+    };
+    var vm = new Vue({
+        el: '#app',
+        data: vuedata,
+        methods:{
+            activateCard:function(){
+                var postData = {};
+                postData.userid = $api.getStorage('userid');
+                postData.card_no = vuedata.card_no;
+                if(!postData.card_no){
+                    toast.fail({
+                        title:'请输入兑换码'
+                    })
+                    return;
+                }
+                api.ajax({
+                    url: BASE_URL+'/App/User/activateCard',
+                    method: 'post',
+                    data: {
+                        values: postData
+                    }
+                },function(ret, err){
+                    if (ret) {
+                        if(ret.code == 1){
+                            toast.success({
+                                title:'兑换成功'
+                            })
+                            api.sendEvent({
+                                name: 'updateUserDetailEvent'
+                            });
+
+                        }else{
+                            toast.fail({
+                                title:ret.msg||'兑换失败'
+                            })
+                        }
+                    }
+                });
+
+
+            }
+        }
+    });
+    apiready = function() {
+        $$('#header').css('padding-top', api.safeArea.top + 'px');
+    }
+
+    function openMine(name) {
+        api.openWin({
+            name: name,
+            url: 'mine/' + name + '.html'
+        });
+    }
+</script>
+
+</html>

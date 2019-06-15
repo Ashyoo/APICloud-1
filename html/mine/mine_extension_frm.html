@@ -1,0 +1,98 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width" />
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/swiper.css">
+    <style>
+        body {
+            background: #262626;
+        }
+        .ttl {
+            background: #F5F5F5;
+            padding: 0.5rem;
+            font-size: 0.75rem;
+            color: #D8B383;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <p class="aui-padded-15 aui-text-center" v-if="!rows.length">暂无推广记录</p>
+        <div class="ttl aui-flex-col aui-flex-between" v-for="it in rows">
+            <div class="text" v-text="it.nickname"></div>
+            <div class="text" v-text="it.mobile"></div>
+            <div class="text" v-text="it.createtime"></div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/dom7.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/vue-tap.js"></script>
+<script type="text/javascript" src="../../script/aui-toast.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript">
+    var toast = new auiToast();
+    var vuedata = {
+        rows: []
+    };
+    var vm = new Vue({
+        el: '#app',
+        data: vuedata,
+        methods: {
+
+        },
+
+    });
+    var pageNo = 1,
+        pageSize = 20;
+    var loadStaus = false;
+    apiready = function() {
+        api.parseTapmode();
+        getData();
+        api.addEventListener({
+            name: 'scrolltobottom'
+        }, function(ret, err) {
+            if (loadStaus) {
+                getData();
+            }
+        });
+    }
+    function getData(){
+        var postData = {};
+        postData.userid = $api.getStorage('userid');
+        postData.pageNo = pageNo;
+        postData.pageSize = pageSize;
+        api.ajax({
+            url: BASE_URL+'/App/User/mySpread',
+            method: 'post',
+            data: {
+                values: postData
+            }
+        },function(ret, err){
+            if (ret) {
+                if(ret.data){
+                    if(ret.data.length < pageSize){
+                        loadStaus = false;
+                    }else{
+                        pageNo += 1;
+                    }
+                    vuedata.rows = vuedata.rows.concat(ret.data)
+                }else{
+                    loadStaus = false;
+                }
+            }
+        });
+
+    }
+</script>
+
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width" />
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/swiper.css">
+    <style>
+        .question {
+            font-size: 0.75rem;
+            font-weight: bold;
+            line-height: 2rem;
+            margin: 0 0.5rem;
+        }
+
+        .answer {
+            font-size: 0.6rem;
+            color: #C2C2C2;
+            padding: 0.5rem;
+        }
+    </style>
+</head>
+
+<body style="background:#fff">
+    <div id="app">
+        <div class="aui-card-list">
+            <div class="aui-card-list-header" v-text="row.title"></div>
+            <div class="aui-card-list-content-padded" v-html="row.content"></div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/dom7.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/vue-tap.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript" src="../../script/aui-toast.js"></script>
+<script type="text/javascript">
+    var toast = new auiToast();
+    var vuedata = {
+        row: {},
+        id: ''
+    };
+    var vm = new Vue({
+        el: '#app',
+        data: vuedata,
+        methods: {}
+    });
+
+
+    apiready = function() {
+        toast.loading({
+            title:'加载中'
+        })
+        vuedata.id = api.pageParam.id;
+        api.ajax({
+            url: BASE_URL + '/App/Msg/msgDetail',
+            method: 'post',
+            data: {
+                values: {
+                    id: vuedata.id
+                }
+            }
+        }, function(ret, err) {
+            toast.hide()
+            if (ret && ret.code == 1) {
+
+                vuedata.row = ret.data;
+            }
+        });
+
+    }
+</script>
+
+</html>

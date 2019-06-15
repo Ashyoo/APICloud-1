@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/swiper.css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+    <style>
+        body {
+            background: #323232;
+            color: #FFF;
+        }
+        .topSlider {
+            padding: 0.75rem 0 0.5rem;
+        }
+        .topSlider .swiper-slide {
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .topSlider .swiper-pagination {
+            position: static;
+        }
+        .topSlider .swiper-pagination-bullet {
+            width: 5px;
+            height: 5px;
+            margin: 0 5px;
+            background: #FFF;
+            opacity: 0.5;
+        }
+        .topSlider .swiper-pagination-bullet-active {
+            opacity: 1;
+        }
+        .moduleList {
+            padding: 0 0rem;
+        }
+        .moduleList li {
+            padding: 0.5rem 0;
+            width: 25%;
+            text-align: center;
+            color: #FFF;
+            font-size: 0.6rem;
+        }
+        .moduleList li img {
+            margin: 0 auto 0.25rem;
+            width: auto;
+            height: 2.5rem;
+        }
+        .ttlBox {
+            padding: 0 0.75rem;
+            height: 2rem;
+        }
+        .ttlBox .ttl {
+            font-size: 0.75rem;
+            border-left: 2px solid #DCB482;
+            line-height: 1;
+            padding-left: 0.4rem;
+        }
+        .ttlBox .more {
+            font-size: 0.65rem;
+        }
+        .photoList {
+            overflow: hidden;
+        }
+        .photoList ul {
+            margin: 0 -0.15rem;
+        }
+        .photoList li {
+            width: 50%;
+            padding: 0.15rem;
+        }
+        .photoList li img {
+            width: 100%;
+            height: 30vw;
+            object-fit: cover;
+        }
+        .photoList li .ttl {
+            font-size: 0.6rem;
+            line-height: 2rem;
+            padding: 0 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="topSlider" v-show="adData && adData.length">
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide" v-if="it.image" v-for="it in adData" v-tap="[openAd,it.url]"><img :src="it.image" width="100%" alt=""></div>
+                </div>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+        <ul class="moduleList aui-flex-col aui-margin-b-10" v-if="classify.length">
+            <li v-tap="[openClassify,it.id,it.name]" v-for="(it,i) in classify" v-if="i <= 6">
+                <img :src="it.icon" alt="">
+                <div v-text="it.name"></div>
+            </li>
+            <li v-tap="[openClassify,0,'全部']">
+                <img src="../image/all.png" alt="">
+                <div>全部</div>
+            </li>
+        </ul>
+        <div v-if="section.length" v-for="(it,i) in section">
+            <div class="ttlBox aui-flex-col aui-flex-between aui-flex-middle">
+                <div class="ttl" v-text="it.name"></div>
+                <div class="more" v-tap="[openSection,it.id,it.name]">更多<span class="aui-iconfont aui-icon-right"></span></div>
+            </div>
+            <div class="photoList">
+                <ul class="aui-flex-col">
+                    <li v-tap="[openDetail,item.movie.id]" v-if="it.movies" v-for="(item,ii) in it.movies">
+                        <img :src="item.movie.cover" alt="">
+                        <div class="ttl aui-ellipsis-1" v-text="item.movie.name"></div>
+                    </li>
+                </ul>
+            </div>
+            <template v-if="it.adv">
+                <div class="adBox aui-margin-t-10 aui-margin-b-10">
+                    <div class="photo" v-tap="[openAd,it.adv.url]"><img :src="it.adv.image" width="100%" alt=""></div>
+                    <div class="name aui-py-5 aui-px-10" v-text="it.adv.title"></div>
+                </div>
+            </template>
+
+        </div>
+
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/swiper.min.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/vue-tap.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+    var vuedata = {
+        classify: [],
+        section: [],
+        adData: [], //广告
+    };
+    var vm = new Vue({
+        el: '#app',
+        data: vuedata,
+        methods: {
+            openSection: function(id, name) {
+                api.openWin({
+                    name: 'video_section_list_win',
+                    url: 'video_section_list_win.html',
+                    slidBackEnabled: false,
+                    reload: true,
+                    pageParam: {
+                        sectionId: id,
+                        title: name
+                    }
+                });
+            },
+            openDetail: function(movieId) {
+                api.openWin({
+                    name: 'video_detail_win',
+                    url: 'video_detail_win.html',
+                    slidBackEnabled: false,
+                    reload: true,
+                    pageParam: {
+                        movieId: movieId
+                    }
+                });
+
+            },
+            openClassify: function(classifyId, name) {
+                api.openWin({
+                    name: 'video_list_win',
+                    url: 'video_list_win.html',
+                    pageParam: {
+                        classifyId: classifyId,
+                        name: name
+                    }
+                });
+
+            }
+        }
+    });
+    apiready = function() {
+        api.parseTapmode();
+        refreshPage();
+        //下拉刷新
+        api.setCustomRefreshHeaderInfo({
+            bgColor: '#262626',
+            images: loading_img,
+            tips: {
+                pull: '你…你想干什么！要刷新数据就拉到位！',
+                threshold: '讨厌 快放开我 非礼呀！',
+                load: '正在刷新数据，请等待...'
+            }
+        }, function() {
+            refreshPage();
+        });
+        // api.setRefreshHeaderInfo({
+        //     loadingImg: 'widget://image/refresh.png',
+        //     bgColor: '#262626',
+        //     textColor: '#DCB482',
+        //     textDown: '下拉可以刷新...',
+        //     textUp: '讨厌 快放开我 非礼呀！',
+        //     textLoading: '正在刷新，请等待...'
+        // }, function(ret, err) {
+        //     if (ret) {
+        //         refreshPage();
+        //     }
+        // });
+    };
+
+    function refreshPage() {
+        // 获取分类
+        getClassifyData();
+        // 获取首页
+        getSectionData();
+        getAd();
+    }
+
+    function getClassifyData() {
+        api.ajax({
+            url: BASE_URL + '/App/Movie/classifyList',
+            method: 'post',
+            data: {
+                values: {
+                    pid: 0
+                }
+            }
+        }, function(ret, err) {
+            api.refreshHeaderLoadDone();
+            if (ret) {
+                if (ret.code == 1) {
+                    vuedata.classify = ret.data;
+                    $api.setStorage('classifyData', JSON.stringify(ret.data));
+
+                }
+            }
+        });
+    }
+
+    function getSectionData() {
+        api.ajax({
+            url: BASE_URL + '/App/Movie/sectionList',
+            method: 'post'
+        }, function(ret, err) {
+            api.refreshHeaderLoadDone();
+            if (ret) {
+                if (ret.code == 1) {
+                    vuedata.section = ret.data;
+                }
+            }
+        });
+
+    }
+
+    var mySwiper;
+    function sliderInit() {
+        mySwiper = new Swiper('.swiper-container', {
+            loop: true,
+            speed: 600,
+            autoplay: {
+                delay: 5000,
+                stopOnLastSlide: false,
+                disableOnInteraction: false,
+            },
+            slidesPerView: 1.25,
+            centeredSlides: true,
+            loopedSlides: 5,
+            spaceBetween: 7,
+            pagination: {
+                el: '.swiper-pagination',
+            },
+            observer: true,
+            observeParents: true,
+            observeSlideChildren: true
+        })
+    }
+
+    //获取广告
+    function getAd() {
+        api.ajax({
+            url: BASE_URL + '/App/Adv/index',
+            method: 'post',
+            data: {
+                values: {
+                    pos_id: 1
+                }
+            }
+        }, function(ret, err) {
+            if (ret && ret.code == 1) {
+                vuedata.adData = ret.data.advData;
+                setTimeout(function(){
+                    if(!mySwiper){
+                        sliderInit();
+                    }
+                },300);
+            }
+        });
+
+    }
+</script>
+
+</html>

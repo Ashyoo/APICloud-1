@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width" />
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+    <style>
+        .aui-tab-item.aui-active {
+            color: #d3b790;
+            border-bottom: 2px solid #d3b790;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <header class="aui-header-bar" id="header">
+            <a class="aui-header-left aui-btn" tapmode onclick="api.closeWin()">
+                <span class="aui-iconfont aui-icon-left"></span>
+            </a>
+            <div class="aui-title">意见反馈</div>
+        </header>
+        <div class="aui-tab" id="tab">
+            <div class="aui-tab-item" :class="{'aui-active': page==0}" tapmode onclick="changeTab(0);">常见问题</div>
+            <div class="aui-tab-item" :class="{'aui-active': page==1}" tapmode onclick="changeTab(1);">我要反馈</div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/dom7.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/vue-tap.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript">
+    var vuedata = {
+        page: 0
+    };
+    var vm = new Vue({
+        el: '#app',
+        data: vuedata,
+        methods: {}
+    });
+    apiready = function () {
+        api.parseTapmode();
+        $api.fixStatusBar($api.byId('header'));
+        var headerH = $api.offset($api.byId('header')).h;
+        var tabH = $api.offset($api.byId('tab')).h;
+        api.openFrameGroup({
+            name: 'feedbackGroup',
+            scrollEnabled: true,
+            rect: {
+                x: 0,
+                y: headerH+tabH,
+                w: 'auto',
+                h: 'auto',
+            },
+            index: 0,
+            frames: [{
+                name: 'feedback_frm',
+                url: 'feedback_frm.html',
+                bounces: true
+            }, {
+                name: 'feedback_add_frm',
+                url: 'feedback_add_frm.html',
+                bounces: true
+            }]
+        }, function (ret, err) {
+            vuedata.page = ret.index;
+        });
+    };
+
+    function changeTab(i) {
+        api.setFrameGroupIndex({
+            name: 'feedbackGroup',
+            index: i
+        });
+    }
+</script>
+
+</html>

@@ -1,0 +1,300 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/common.css">
+    <style>
+        .box {
+            padding: 0.5rem;
+        }
+
+        .right {
+            margin:0 0.5rem;
+        }
+
+        .right .huancun {
+            font-size: 0.6rem;
+        }
+        .cartList {
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .cartList .item {
+            position: relative;
+            background-color: #FFF;
+            /* margin-bottom: 0.25rem;
+            padding: 0.5rem 0.75rem 0.5rem 2rem; */
+            -webkit-transition: all 0.3s ease;
+            transition: all 0.3s ease;
+        }
+
+        .cartList .item .del {
+            position: absolute;
+            left: 100%;
+            top: 0;
+            height: 100%;
+            width: 60px;
+            background: #FF445B;
+            color: #FFF;
+            font-size: 0.75rem;
+            text-align: center;
+        }
+
+        .cartList .item .checkbox {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2rem;
+            height: 100%;
+            background-position: center center;
+        }
+
+        .swipeleft {
+            -webkit-transform: translateX(-60px);
+            transform: translateX(-60px);
+        }
+
+        .swipeCover {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.0);
+            z-index: 15;
+            display: none;
+        }
+
+        .swipeleft .swipeCover {
+            display: block;
+        }
+    </style>
+</head>
+
+<body style="background: #fff">
+    <div id="app">
+        <div class="cartList">
+        <div class="box aui-flex-col aui-border-b item" v-for="(it,index) in rows">
+            <div class="swipeCover" v-tap.stop="[clearSwipe]"></div>
+            <div class="del aui-flex-col aui-flex-middle aui-flex-center" v-tap.stop="[delItem,it.id,index,it.movie.video_url]">删除</div>
+            <div class="photo" v-tap="[openDetail,it.movie_id]">
+                <img :src="it.movie.cover" alt="" style="width:6rem;height: 5rem; object-fit: cover; ">
+            </div>
+            <div class="right flex-auto aui-flex-row  aui-flex-between" v-tap="[openDetail,it.movie_id]">
+                <div class="ttl" v-text="it.movie.name"></div>
+                <div class="bottom" v-if="cacheVideo.videoId == it.video_id">
+                    <div class="huancun aui-flex-col aui-flex-between">
+                        <div v-if="cacheVideo.state == 2">缓存中</div>
+                        <div v-if="cacheVideo.state == 3">缓存完成</div>
+                        <div v-if="cacheVideo.progress"><span v-text="cacheVideo.progress"></span>%</div>
+                    </div>
+                    <div class="progress">
+                        <div class="aui-progress-outer">
+                            <div class="aui-progress-inner">
+                                <div class="aui-progress-bg" :style="{ width: cacheVideo.progress+'%'}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bottom" v-if="it.status == 1 && cacheVideo.videoId != it.video_id">
+                    <div class="huancun aui-flex-col aui-flex-between">
+                        <div>等待缓存</div>
+                        <div>0%</div>
+                    </div>
+                    <div class="progress">
+                        <div class="aui-progress-outer">
+                            <div class="aui-progress-inner">
+                                <div class="aui-progress-bg" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bottom" v-if="it.status == 9 && cacheVideo.videoId != it.video_id">
+                    <div class="huancun aui-flex-col aui-flex-between">
+                        <div>缓存完成</div>
+                        <div>100%</div>
+                    </div>
+                    <div class="progress">
+                        <div class="aui-progress-outer">
+                            <div class="aui-progress-inner">
+                                <div class="aui-progress-bg" style="width: 100%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/cash.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/vue-tap.js"></script>
+<script type="text/javascript" src="../../script/aui-toast.js"></script>
+<script type="text/javascript">
+    var vuedata = {
+        cacheVideo:{},
+        rows: []
+    };
+    var vm = new Vue({
+        el: '#app',
+        data: vuedata,
+        methods: {
+            openDetail: function (movieId) {
+                api.openWin({
+                    name: 'video_detail_win',
+                    url: '../video_detail_win.html',
+                    reload: true,
+                    slidBackEnabled: false,
+                    pageParam: {
+                        movieId: movieId
+                    }
+                });
+
+            },
+
+            //去掉左滑
+            clearSwipe: function () {
+                $('.swipeleft').removeClass('swipeleft');
+            },
+        }
+    });
+    var m3u8CacheServer;
+    var toast = new auiToast();
+    apiready = function () {
+        api.parseTapmode();
+        getData();
+        m3u8CacheServer = api.require('m3u8CacheServer');
+        m3u8CacheServer.startServer(function(ret) {});
+        m3u8CacheServer.addEventListener(function(ret) {
+            if(ret){
+                vuedata.cacheVideo = ret.data;
+                if(ret.evenType == 'onDownloadSuccess'){
+                    // 缓存成功
+                    var postData = {};
+                    postData['userid'] = $api.getStorage('userid');
+                    postData['videoId'] = ret.data.videoId;
+                    api.ajax({
+                        url: BASE_URL+'/App/Movie/cacheUpdate',
+                        method: 'post',
+                        data: {
+                            values: postData
+                        }
+                    },function(ret, err){
+                        api.addEventListener({
+                            name: 'updateUserDetailEvent'
+                        }, function(ret, err){
+                        });
+                    });
+                }
+            }
+        });
+
+    }; //apiready结束
+    // 获取缓存列表
+    function getData() {
+        toast.loading({
+            title: '加载中'
+        })
+        api.ajax({
+            url: BASE_URL + '/App/Movie/cacheList',
+            method: 'post',
+            data: {
+                values: {
+                    userid: $api.getStorage('userid')
+                }
+            }
+        }, function (ret, err) {
+            toast.hide();
+            if (ret) {
+                if (ret.data) {
+                    vuedata.rows = vuedata.rows.concat(ret.data)
+
+
+                }
+            }
+        });
+    }
+
+    function delItem(id,i,videoUrl){
+        vm.clearSwipe();
+        toast.loading({
+            title: '加载中'
+        })
+        api.ajax({
+            url: BASE_URL + '/App/Movie/cacheDel',
+            method: 'post',
+            data: {
+                values: {
+                    userid: $api.getStorage('userid'),
+                    id: id
+                }
+            }
+        }, function (ret, err) {
+            toast.hide();
+            if (ret && ret.code == 1) {
+                m3u8CacheServer.clearCache({
+                    url:videoUrl
+                },function(ret) {
+                    // log(ret)
+                });
+                toast.success({
+                    title: '删除成功'
+                });
+                vuedata.rows.splice(i,1);
+            }
+        });
+    }
+
+
+    //左滑删除
+    var swipeFlag = false;
+    var x, y, X, Y, swipeX, swipeY;
+    $('.cartList').on('touchstart', '.item', function (event) {
+        x = event.changedTouches[0].pageX;
+        y = event.changedTouches[0].pageY;
+        swipeX = true;
+        swipeY = true;
+        if (swipeFlag) {
+            $('.swipeleft').removeClass('swipeleft');
+        }
+    });
+    $('.cartList').on('touchmove', '.item', function (event) {
+        var _this = $(this);
+        X = event.changedTouches[0].pageX;
+        Y = event.changedTouches[0].pageY;
+        // 左右滑动
+        if (swipeX && Math.abs(X - x) - Math.abs(Y - y) > 0) {
+            // 阻止事件冒泡
+            event.stopPropagation();
+            if (X - x > 10) {   //右滑
+                event.preventDefault();
+                _this.removeClass('swipeleft');    //右滑收起
+                swipeFlag = false;
+            }
+            if (x - X > 10) {   //左滑
+                event.preventDefault();
+                _this.addClass('swipeleft');   //左滑展开
+                swipeFlag = true;
+            }
+            swipeY = false;
+        }
+        // 上下滑动
+        if (swipeY && Math.abs(X - x) - Math.abs(Y - y) < 0) {
+            swipeX = false;
+        }
+    });
+</script>
+
+</html>

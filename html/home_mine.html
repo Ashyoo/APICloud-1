@@ -1,0 +1,425 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width" />
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../css/swiper.css" />
+    <style>
+        body {
+            background: #323232;
+        }
+        .bg {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 10rem;
+            background: url(../image/common/mine_bg.png) no-repeat center top;
+            background-size: cover;
+        }
+        #header {
+            background: none;
+        }
+        .content {
+            padding: 4rem 0.75rem 0;
+        }
+        .card {
+            background: #FFF;
+            border-radius: 0.25rem;
+            position: relative;
+            margin-bottom: 0.5rem;
+        }
+        .avatar {
+            width: 5rem;
+            height: 5rem;
+            position: absolute;
+            left: 50%;
+            top: 0;
+            -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
+        .card01 .topBtns {
+            padding: 1.75rem 1rem 0.25rem;
+        }
+        .card01 .topBtns>div {
+            color: #DCB482;
+            border: 1px solid #DCB482;
+            border-radius: 0.25rem;
+            padding: 0.1rem 0.5rem;
+            min-width: 5rem;
+            text-align: center;
+        }
+        .card01 .name {
+            text-align: center;
+            font-size: 1rem;
+            padding: 0.75rem;
+            padding-right: 0;
+        }
+        .card01 .topInfo {
+            margin-top: 0.75rem;
+            height: 5rem;
+        }
+        .card01 .topInfo dl {
+            width: 50%;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #999;
+            height: 4rem;
+        }
+        .card01 .topInfo dt {
+            font-size: 1.8rem;
+            line-height: 2rem;
+            margin-bottom: 0.25rem;
+        }
+        .card01 .topInfo .icon img {
+            height: 2rem;
+            width: auto;
+        }
+        .right-arrow:before {
+            border-color: #DCB482;
+            right: 0.75rem;
+            width: 0.6rem;
+            height: 0.6rem;
+        }
+        .modelList {
+            text-align: center;
+            padding: 0 0.5rem;
+            font-size: 0.75rem;
+            color: #666;
+        }
+        .modelList>div {
+            padding: 0.75rem 0;
+        }
+        .modelList .photo {
+            margin: 0 auto 0.25rem;
+            width: 2.5rem;
+            height: 2.5rem;
+        }
+        .modelList img {
+            width: 100%;
+            height: 100%;
+        }
+        .list {
+            padding: 0 0.5rem;
+        }
+        .list .item {
+            padding: 0.5rem 0;
+            font-size: 0.75rem;
+        }
+        .list .photo {
+            width: 2.75rem;
+        }
+        .topSlider {
+            border-radius: 0.25rem;
+            overflow: hidden;
+        }
+        img.sex {
+            display: inline;
+            width: 18px;
+            position: relative;
+            top: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="bg"></div>
+        <div class="relative">
+            <div id="header" class="aui-flex-col aui-flex-right aui-flex-middle aui-px-10">
+                <div class="aui-px-5" tapmode onclick="openMine('set_win');"><img src="../image/common/ic_my_setting.png" width="25" alt=""></div>
+            </div>
+            <div class="content">
+                <div class="card card01">
+                    <div class="avatar" tapmode onclick="openMine('set_win');"><img :src="row.avatar" alt=""></div>
+                    <div class="aui-flex-col aui-flex-between topBtns">
+                        <div tapmode onclick="openMine('home_mine_active_win');">激活码兑换</div>
+                        <div  tapmode onclick="openMine('spread_win');" v-text="'L'+row.groupData.level+row.groupData.desc" v-if="row.userid"></div>
+                        <div  tapmode onclick="openMine('spread_win');" v-text="'登录注册'" v-else></div>
+                    </div>
+                    <div class="aui-flex-col aui-flex-middle aui-flex-center">
+                        <div class="color-main aui-padded-t-15" style="position:relative;">
+                            <span class="name" v-text="row.nickname || '暂无昵称'"></span>
+                            <img src="../image/common/icon02.png" class="sex" v-if="row.sex == 2" alt="">
+                            <img src="../image/common/icon01.png" class="sex" v-else alt="">
+                            <img :src="row.groupData.icon" class="sex" alt="">
+                        </div>
+                    </div>
+
+                    <div class="aui-font-size-14 color-999 aui-text-center">看广告,推广可增加更多次数哦~</div>
+                    <div class="topInfo aui-flex-col aui-flex-middle aui-border-t">
+                        <dl class="aui-flex-row aui-flex-middle aui-flex-center aui-border-r" v-if="userid">
+                            <dt class="color-main"><span v-text="row.today_play_count||0"></span>/<span v-text="row.total_play_count"></span></dt>
+                            <dd>今日已用观影次数</dd>
+                        </dl>
+                        <dl class="aui-flex-row aui-flex-middle aui-flex-center aui-border-r" v-else>
+                            <dt class="color-main"><span v-text="visitorPlayCount"></span>/<span v-text="visitorEveryDayCount"></span></dt>
+                            <dd>今日已用观影次数</dd>
+                        </dl>
+                        <dl class="aui-flex-row aui-flex-middle aui-flex-center right-arrow" tapmode onclick="openMine('spread_win');">
+                            <dt class="icon"><img src="../image/common/ic_level1_l.png" alt=""></dt>
+                            <dd class="aui-padded-l-5 aui-padded-r-5">下一等级还差<span v-text="row.next_spread_count"></span>人</dd>
+                        </dl>
+                    </div>
+                </div>
+                <div class="card card02">
+                    <div class="modelList aui-flex-col aui-flex-middle aui-flex-between">
+                        <div tapmode onclick="openMine('spread_win');">
+                            <div class="photo"><img src="../image/common/ic_promote.gif" alt=""></div>
+                            <div class="txt">我要推广</div>
+                        </div>
+                        <div tapmode onclick="openMine('feedback_win');">
+                            <div class="photo"><img src="../image/common/ic_my_feedback.png" alt=""></div>
+                            <div class="txt">意见反馈</div>
+                        </div>
+                        <div tapmode onclick="openMine('notice_win');">
+                            <div class="photo"><img src="../image/common/ic_my_notice.png" alt=""></div>
+                            <div class="txt">通知</div>
+                        </div>
+                        <div tapmode onclick="openAd('http://www.baidu.com');">
+                            <div class="photo"><img src="../image/common/ic_potato.png" alt=""></div>
+                            <div class="txt">火爆交流群</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="topSlider aui-margin-b-10">
+                    <div class="swiper-container">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide" v-if="it.image" v-for="it in adData" v-tap="[openAd,it.url]"><img :src="it.image" width="100%" alt=""></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card card03">
+                    <div class="list lastNoBorder">
+                        <div class="item aui-flex-col aui-flex-middle right-arrow aui-border-b" tapmode onclick="openMine('video_record_win');">
+                            <div class="photo"><img src="../image/common/ic_my_history.png" alt=""></div>
+                            <div class="flex-auto aui-px-10">
+                                <div class="ttl">历史记录</div>
+                                <div class="aui-font-size-12 color-999">目前历史观看过<span v-text="row.playCount"></span>部</div>
+                            </div>
+                        </div>
+                        <div class="item aui-flex-col aui-flex-middle right-arrow aui-border-b" tapmode onclick="openMine('video_huancun_win');">
+                            <div class="photo"><img src="../image/common/ic_my_feedback.png" alt=""></div>
+                            <div class="flex-auto aui-px-10">
+                                <div class="ttl">我的缓存</div>
+                                <div class="aui-font-size-12 color-999">目前本地大片有<span v-text="row.cacheCount"></span>部</div>
+                            </div>
+                        </div>
+                        <div class="item aui-flex-col aui-flex-middle right-arrow aui-border-b" tapmode onclick="openMine('video_collect_win');">
+                            <div class="photo"><img src="../image/common/ic_my_favor.png" alt=""></div>
+                            <div class="flex-auto aui-px-10" >
+                                <div class="ttl" >我的收藏</div>
+                                <div class="aui-font-size-12 color-999">目前已收藏<span v-text="row.collectCount"></span>部</div>
+                            </div>
+                        </div>
+                        <div class="item aui-flex-col aui-flex-middle right-arrow aui-border-b" tapmode onclick="">
+                            <div class="photo"><img src="../image/common/ic_down.png" alt=""></div>
+                            <div class="flex-auto aui-px-10">
+                                <div class="ttl">全网小说</div>
+                                <div class="aui-font-size-12 color-999">全网最全小说实时更新免费畅读无任何广告</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/dom7.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/vue-tap.js"></script>
+<script type="text/javascript" src="../script/aui-toast.js"></script>
+<script type="text/javascript" src="../script/swiper.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+    var toast = new auiToast();
+    var vuedata = {
+        userid:false,
+        visitorEveryDayCount:$api.getStorage("visitorEveryDayCount"),
+        visitorPlayCount:$api.getStorage("visitorPlayCount"),
+        row:{
+            next_spread_count:0,
+            total_play_count:1,
+            groupData:{
+                play_num:1,
+            },
+            nickname:'',
+            avatar:'../image/common/avatar.png',
+            playCount:0,
+            collectCount:0,
+            cacheCount:0
+        },
+        adData: []
+    };
+    var vm = new Vue({
+        el: '#app',
+        data: vuedata,
+    });
+    apiready = function(){
+
+        setTimeout(function(){
+            $$('#header').css('padding-top',api.safeArea.top + 'px');
+            api.parseTapmode();
+        },100)
+
+        api.addEventListener({
+            name: 'loginSuccessEvent'
+        }, function(ret, err){
+            if( ret ){
+                getUserData();
+            }
+        });
+        api.addEventListener({
+            name: 'updateUserDetailEvent'
+        }, function(ret, err){
+            if( ret ){
+                getUserData();
+            }
+        });
+        getUserData();
+
+
+        api.addEventListener({
+            name: 'playMovieEvent'
+        }, function(ret, err){
+            if( ret ){
+                vuedata.visitorEveryDayCount = $api.getStorage("visitorEveryDayCount");
+                vuedata.visitorPlayCount = $api.getStorage("visitorPlayCount");
+                getUserData();
+            }
+        });
+        api.addEventListener({
+            name: 'logutEvent'
+        }, function(ret, err){
+            if( ret ){
+                vuedata.visitorEveryDayCount = $api.getStorage("visitorEveryDayCount");
+                vuedata.visitorPlayCount = $api.getStorage("visitorPlayCount");
+                $api.rmStorage('userid');
+                $api.rmStorage('group_id');
+                $api.rmStorage('spread_no');
+                vuedata.userid = false;
+                vuedata.row.nickname = '';
+                vuedata.row.playCount = 0;
+                vuedata.row.collectCount = 0;
+                vuedata.row.cacheCount = 0;
+                vuedata.row.avatar = '../image/common/avatar.png';
+            }
+        });
+        vuedata.visitorEveryDayCount = $api.getStorage("visitorEveryDayCount");
+        vuedata.visitorPlayCount = $api.getStorage("visitorPlayCount");
+
+        //下拉刷新
+        api.setCustomRefreshHeaderInfo({
+            bgColor: '#262626',
+            images: loading_img,
+            tips: {
+                pull: '你…你想干什么！要刷新数据就拉到位！',
+                threshold: '讨厌 快放开我 非礼呀！',
+                load: '正在刷新数据，请等待...'
+            }
+        }, function() {
+            getUserData();
+        });
+
+    }
+    function getUserData(){
+        var userid = $api.getStorage('userid');
+        if(!userid){
+            api.refreshHeaderLoadDone();
+            return;
+        }
+        toast.loading({
+            title:'加载中'
+        })
+        var postData = {};
+        postData.userid = userid;
+        vuedata.userid = userid;
+        api.ajax({
+            url: BASE_URL+'/App/User/detail',
+            method: 'post',
+            data: {
+                values: postData
+            }
+        },function(ret, err){
+            api.refreshHeaderLoadDone();
+            setTimeout(function(){
+                toast.hide();
+            },800)
+
+            if (ret) {
+                // Vue.set(vuedata,'row',ret.data);
+                vuedata.row = ret.data;
+                setTimeout(function(){
+                    vuedata.row = ret.data;
+                    vuedata.row.playCount = ret.data.playCount;
+                    vuedata.row.collectCount = ret.data.collectCount;
+                    vuedata.row.cacheCount = ret.data.cacheCount;
+                    $$('#header').css('padding-top',api.safeArea.top + 'px');
+                    api.parseTapmode();
+                },100)
+            }
+        });
+        getAd();
+
+    }
+    function openMine(name){
+        var userid = $api.getStorage('userid');
+        if(!userid){
+            openLogin();
+            return;
+        }
+        api.openWin({
+            name: name,
+            url: 'mine/'+ name + '.html'
+        });
+    }
+    function openLogin(){
+        api.openWin({
+            name: 'login_win',
+            url: 'login.html',
+            pageParam: {
+                name: 'test'
+            }
+        });
+    }
+
+    sliderInit();
+
+
+    function sliderInit() {
+        new Swiper(' .topSlider .swiper-container', {
+            observer: true,
+            observeParents: true,
+            observeSlideChildren: true
+        });
+
+
+    }
+    //获取广告
+    function getAd() {
+        api.ajax({
+            url: BASE_URL + '/App/Adv/index',
+            method: 'post',
+            data: {
+                values: {
+                    pos_id: 5
+                }
+            }
+        }, function(ret, err) {
+            if (ret && ret.code == 1) {
+                vuedata.adData = ret.data.advData;
+            }
+        });
+
+    }
+</script>
+
+</html>

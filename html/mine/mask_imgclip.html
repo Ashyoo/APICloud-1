@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width"/>
+<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+<title></title>
+<link rel="stylesheet" type="text/css" href="../../css/aui-flex.css" />
+<link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<style>
+	#footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+		line-height: 50px;
+		background: #000;
+		color: #FFF;
+	}
+	#footer li {
+		float: left;
+		width: 33.333%;
+		text-align: center;
+		font-size: 0.75rem;
+		line-height: 50px;
+	}
+</style>
+</head>
+<body>
+<ul class="clearfix" id="footer">
+	<li tapmode onClick="closeThis();">取消</li>
+	<li tapmode onClick="resetThis();">重置</li>
+	<li tapmode onClick="saveThis();">确定</li>
+</ul>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/dom7.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript">
+var imgSrc;
+var FNImageClip;
+apiready = function(){
+	api.parseTapmode();
+	$api.fixTabBar($api.byId('footer'));
+	var footerH = $api.offset($api.byId('footer')).h;
+
+	imgSrc = api.pageParam.src;
+	FNImageClip = api.require('FNImageClip');
+	FNImageClip.open({
+		rect: {
+			x: 0,
+			y: 0,
+			w: api.winWidth,
+			h: api.winHeight - footerH
+		},
+		srcPath: imgSrc,
+		style: {
+			mask: '#999',
+			clip: {
+				w: 300,
+				h: 300,
+				x: (api.winWidth - 300) / 2,
+        		y: (api.winHeight - footerH - 300)/2,
+				appearance: 'rectangle'
+			}
+		},
+		mode: 'image'
+	}, function(ret, err) {
+	});
+};
+function closeThis() {
+	FNImageClip.close();
+	setTimeout(function(){
+		api.closeFrame();
+	},100);
+
+}
+function resetThis() {
+	FNImageClip.reset();
+}
+function saveThis() {
+	FNImageClip.save({
+		destPath: 'fs://imageClip/avatar.png',
+		copyToAlbum: false,
+		quality: 0.5
+	}, function(ret, err) {
+		if (ret) {
+			api.execScript({
+				name: api.pageParam.wname,
+				frameName: api.pageParam.fname,
+				script: 'uploadImg("'+ ret.destPath +'")'
+			});
+			setTimeout(function(){
+				closeThis();
+			},50);
+		}
+	});
+}
+</script>
+</html>

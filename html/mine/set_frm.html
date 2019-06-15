@@ -1,0 +1,197 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width" />
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/swiper.css">
+    <style>
+        .account {
+            background: #313234;
+            margin-top: 0.1rem;
+            height: 3rem;
+            padding: 0 1rem;
+            margin: 1rem 0;
+        }
+
+        .account .text {
+            font-size: 0.75rem;
+            color: #fff;
+        }
+
+        .account .desc {
+            font-size: 0.75rem;
+            color: #D2B28B;
+        }
+
+        .account i {
+            font-size: 0.75rem;
+            color: #D2B28B;
+        }
+
+        .cache {
+            background: #313234;
+            margin-top: 0.1rem;
+            height: 3rem;
+            padding: 0 1rem;
+        }
+
+        .cache .text {
+            font-size: 0.75rem;
+            color: #fff;
+        }
+
+        .cache .desc {
+            font-size: 0.75rem;
+            color: #D2B28B;
+        }
+
+        .edition {
+            background: #313234;
+            margin-top: 0.1rem;
+            height: 3rem;
+            padding: 0 1rem;
+        }
+
+        .edition .text {
+            font-size: 0.75rem;
+            color: #fff;
+        }
+
+        .edition .desc {
+            font-size: 0.75rem;
+            color: #D2B28B;
+            border: 1px #D2B28B solid;
+            border-radius: 1rem;
+            padding: 0 0.5rem;
+        }
+
+        .agreement {
+            background: #313234;
+            margin-top: 0.1rem;
+            height: 3rem;
+            padding: 0 1rem;
+        }
+
+        .agreement .text {
+            font-size: 0.75rem;
+            color: #fff;
+        }
+
+        .agreement .desc {
+            font-size: 0.75rem;
+            color: #D2B28B;
+        }
+
+        .agreement i {
+            font-size: 0.75rem;
+            color: #D2B28B;
+        }
+    </style>
+</head>
+
+<body style="background:#131313">
+    <div id="app">
+        <div class="account aui-flex-col aui-flex-between aui-flex-middle" tapmode onclick="openAccount('account_win')">
+            <div class="text">账户管理</div>
+            <i class="aui-iconfont aui-icon-right"></i>
+        </div>
+        <div class="cache aui-flex-col aui-flex-between aui-flex-middle" tapmode onclick="clearCache()">
+            <div class="text">清理缓存</div>
+            <div class="desc">{{cacheSize || '0'}}M</div>
+        </div>
+        <div class="edition aui-flex-col aui-flex-between aui-flex-middle" tapmode onclick="checkMode();">
+            <div class="text">当前版本V1.1.9</div>
+            <div class="desc">最新</div>
+        </div>
+        <div class="agreement aui-flex-col aui-flex-between aui-flex-middle" tapmode onclick="openAgreement();">
+            <div class="text">用户协议</div>
+            <i class="aui-iconfont aui-icon-right"></i>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/dom7.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/vue-tap.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript" src="../../script/swiper.min.js"></script>
+<script type="text/javascript">
+    var vuedata = {
+        cacheSize: '',
+    };
+    var vm = new Vue({
+        el: '#app',
+        data: vuedata,
+        methods: {
+
+        }
+    });
+    apiready = function() {
+        api.parseTapmode();
+        getCache();
+    };
+    //检测缓存
+    function getCache() {
+        api.getCacheSize(function(ret) {
+            var size = ret.size;
+            if (size > 0) {
+                var mb = size / 1024 / 1024;
+                var txt = mb.toFixed(2);
+                vuedata.cacheSize = txt;
+            }
+        });
+    }
+    function openAgreement(){
+        api.openWin({
+            name: 'agreement_win',
+            url: 'agreement_win.html',
+            pageParam: {
+                name: 'test'
+            }
+        });
+
+    }
+    function openAccount(){
+        api.openWin({
+            name: 'account_win',
+            url: 'account_win.html',
+            bgColor:'#323232',
+            pageParam: {
+                name: 'test'
+            }
+        });
+
+    }
+    //清空缓存
+    function clearCache() {
+        api.confirm({
+            title: '确定清除缓存',
+            msg: '',
+            buttons: ['取消', '确定']
+        }, function(ret, err) {
+            var index = ret.buttonIndex;
+            if (index == 2) {
+                showProgress();
+                api.clearCache(function() {
+                    setTimeout(function() {
+                        hideProgress();
+                        toast('清除完成');
+                        vuedata.cacheSize = 0;
+                    }, 1000);
+                });
+            }
+        });
+    }
+
+    function checkMode() {
+        alert('已经是最新版本');
+    }
+</script>
+
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width" />
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/swiper.css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+    <style>
+        #header .iconfont {
+            font-size: 1rem;
+        }
+
+
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <header class="aui-header-bar" id="header">
+            <div class="aui-header-left" tapmode onclick="api.closeWin();">
+                <span class="aui-iconfont aui-icon-left"></span>
+            </div>
+            <div class="aui-title" v-text="title">影片</div>
+            <div class="aui-header-right color-main">
+                <span class="iconfont icon-cascades" v-show="listMode==1" v-tap="[changeListMode,2]"></span>
+                <span class="iconfont icon-list" v-show="listMode==2" v-tap="[changeListMode,1]"></span>
+            </div>
+        </header>
+
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/dom7.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/vue-tap.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="../script/swiper.min.js"></script>
+<script type="text/javascript">
+    var vuedata = {
+        title: '影片',
+        listMode: 1,
+        sortSelected:'default',
+        classifySelected:0,
+        classifys:[],
+        childrenClassifys:[]
+    };
+    var vm = new Vue({
+        el: '#app',
+        data: vuedata,
+        methods: {
+            selectSort:function(t){
+                vuedata.sortSelected = t;
+                api.sendEvent({
+                    name: 'refrshMovieListData',
+                    extra: {
+                        classifyId: vuedata.classifySelected,
+                        sort: vuedata.sortSelected
+                    }
+                });
+            },
+            selectClassify:function(id,index){
+                vuedata.classifySelected = id;
+                if(vuedata.classifys[index].childs.length && vuedata.classifys[index].childs){
+                    vuedata.childrenClassifys = vuedata.classifys[index].childs;
+                }else{
+                    vuedata.childrenClassifys = []
+                }
+                var headerH = $api.offset($api.byId('header')).h;
+                var navH = $api.offset($api.byId('nav')).h;
+                console.log(navH)
+                api.setFrameAttr({
+                    name: 'video_list_frm',
+                    rect: {
+                        x: 0,
+                        y: headerH+navH
+                    }
+                });
+
+
+                api.sendEvent({
+                    name: 'refrshMovieListData',
+                    extra: {
+                        classifyId: id,
+                        sort: vuedata.sortSelected
+                    }
+                });
+
+            },
+            changeListMode: function(i) {
+                vuedata.listMode = i;
+                api.execScript({
+                    frameName: 'video_list_frm',
+                    script: 'changeListMode("' + i + '");'
+                });
+            }
+        }
+    });
+
+
+
+    apiready = function() {
+        api.parseTapmode();
+        $api.fixStatusBar($api.byId('header'));
+        var headerH = $api.offset($api.byId('header')).h;
+        // var navH = $api.offset($api.byId('nav')).h;
+        // console.log(navH)
+        vuedata.title = api.pageParam.name;
+        vuedata.classifySelected = api.pageParam.classifyId;
+        // var classifys = $api.getStorage('classifyData');
+        // if(classifys){
+        //     vuedata.classifys = JSON.parse(classifys);
+        // }
+        // setTimeout(function(){
+        //     sliderInit();
+        //
+        // },100)
+        api.openFrame({
+            name: 'video_list_frm',
+            url: 'video_list_frm.html',
+            rect: {
+                x: 0,
+                y: headerH,
+                w: 'auto',
+                h: 'auto',
+            },
+            bounces: true,
+            pageParam: api.pageParam
+        });
+    };
+</script>
+
+</html>

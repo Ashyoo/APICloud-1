@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+    <style>
+        body {
+            background: #FFF;
+        }
+
+        .photoList [data-type="1"],
+        .photoList [data-type="2"] {
+            display: none;
+        }
+
+        .listType01 [data-type="1"] {
+            display: block;
+        }
+
+        .listType02 [data-type="2"] {
+            display: block;
+        }
+
+        .listType01 {
+            overflow: hidden;
+        }
+
+        .listType01 ul {
+            padding: 0.15rem;
+        }
+
+        .listType01 li {
+            display: block;
+            width: 50%;
+            padding: 0.15rem;
+        }
+
+        .listType01 li img {
+            width: 100%;
+            height: 30vw;
+            object-fit: cover;
+        }
+
+        .listType01 li .textBox {
+            padding: 0.25rem 0;
+            font-size: 0.6rem;
+        }
+
+        .listType02 li {
+            width: 100%;
+            padding: 0.25rem 0.5rem;
+        }
+
+        .listType02 .photo {
+            width: 7rem;
+            margin-right: 0.5rem;
+        }
+
+        .listType02 .photo img {
+            width: 100%;
+            height: 5rem;
+            object-fit: cover;
+        }
+
+        .listType02 .desc {
+            font-size: 0.6rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+
+        .listType02 .tagList {
+            margin-top: 0.25rem;
+        }
+
+        .listType02 .tagList .tag {
+            width: auto;
+            font-size: 0.6rem;
+            padding: 0 0.5rem;
+            border-radius: 100px;
+            line-height: 1rem;
+            background: #F7F4ED;
+            color: #DCB482;
+            margin-right: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+
+        <div class="photoList " :class="{'listType01' : listMode == 1,'listType02' : listMode == 2 }">
+            <ul class="aui-flex-col">
+                <li class="aui-flex-col aui-flex-middle" v-tap="[openDetail,it.movie.id]" v-for="it in rows">
+                    <div class="photo"><img :src="it.movie.cover" alt=""></div>
+                    <div class="textBox flex-auto">
+                        <div class="ttl aui-ellipsis" v-text="it.movie.name"></div>
+                        <div data-type="2" v-if="it.movie.classify_jq_ids">
+                            <div class="tagList aui-flex-col">
+                                <div class="tag" v-for="item in it.classify_jq_ids" v-text="item.name"></div>
+                            </div>
+                        </div>
+                        <div class="desc" data-type="2"><span v-text="it.movie.play_count"></span>次播放</div>
+                        <div class="desc" data-type="2">评分<span v-text="it.movie.score"></span></div>
+                    </div>
+
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/dom7.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/vue-tap.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+    var pageNo = 1,pageSize = 50;
+    // var sort = 'default';
+    var sectionId;
+    var vuedata = {
+        sort:'default',
+        sectionId:0,
+        listMode:1,
+        rows:[]
+    };
+    var vm = new Vue({
+        el: '#app',
+        data: vuedata,
+        methods:{
+            openDetail:function(movieId){
+                api.openWin({
+                    name: 'video_detail_win',
+                    url: 'video_detail_win.html',
+                    reload:true,
+                    slidBackEnabled:false,
+                    pageParam: {
+                        movieId: movieId
+                    }
+                });
+
+            },
+        }
+    });
+    var loadStaus = false;
+    apiready = function() {
+        api.parseTapmode();
+        vuedata.sectionId = api.pageParam.sectionId;
+
+        // api.refreshHeaderLoading();
+        getData();
+        api.addEventListener({
+            name: 'refrshMovieListData'
+        }, function(ret, err){
+            if( ret ){
+                api.refreshHeaderLoading();
+                pageNo = 1;
+                vuedata.rows = [];
+            }
+        });
+        //下拉刷新
+        api.setCustomRefreshHeaderInfo({
+            bgColor: '#262626',
+            images: loading_img,
+            tips: {
+                pull: '你…你想干什么！要刷新数据就拉到位！',
+                threshold: '讨厌 快放开我 非礼呀！',
+                load: '正在刷新数据，请等待...'
+            }
+        }, function() {
+            pageNo = 1;
+            vuedata.rows = [];
+            getData();
+        });
+    };
+    function getData(){
+        var postData = {};
+        postData.id = vuedata.sectionId;
+        postData.pageNo = pageNo;
+        postData.pageSize = pageSize;
+        api.ajax({
+            url: BASE_URL+'/App/Movie/sectionDetail',
+            method: 'post',
+            data: {
+                values: postData
+            }
+        },function(ret, err){
+            if (ret) {
+                if(ret.data){
+                    vuedata.rows = vuedata.rows.concat(ret.data.movies)
+                }else{
+                    loadStaus = false;
+                }
+                api.refreshHeaderLoadDone();
+
+            }
+        });
+
+    }
+
+
+    //切换列表样式
+    function changeListMode(i) {
+        vuedata.listMode = i;
+    }
+</script>
+
+</html>

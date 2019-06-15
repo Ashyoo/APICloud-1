@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/common.css">
+    <style>
+        .aui-card-list {
+            position: relative;
+            width: 80%;
+            left: 10%;
+            top: 80px;
+            background: none;
+        }
+        .wrap {
+            padding: 0.56rem 1rem;
+            background: #d5b588;
+            text-align: center;
+            color: #ffffff;
+            font-size: 0.7rem;
+            border-radius: 8px;
+        }
+        .wrap .title {
+            margin-bottom: 0.75rem;
+        }
+        .wrap img {
+            width: 80%;
+            display: block;
+            margin: 0 auto;
+        }
+        p {
+            color: #ffffff;
+        }
+        big {
+            font-size: 2rem;
+            font-weight: 400;
+        }
+        .aui-btn {
+            background: #c8a980;
+        }
+        .btn-2 {
+            background: #e9e0d4;
+            color: #ad8755;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="aui-card-list">
+            <div class="aui-card-list-content wrap">
+                <div class="title aui-font-size-18">扫码下载视频APP</div>
+                <div class="crcode">
+                    <img :src="codeImg" />
+                </div>
+                <big v-text="user.spread_no"></big>
+                <p>您的推广码</p>
+            </div>
+        </div>
+        <div class="aui-card-list">
+            <div class="aui-card-list-content-padded">看片前请保存官网，被封后可以在官网下载新的APP。</div>
+            <div class="aui-card-list-footer aui-hide">
+                <div>
+                    <div class="aui-btn aui-btn-inline">保存二维码</div>
+                </div>
+                <div>
+                    <div class="aui-btn aui-btn-inline btn-2">复制推广链接</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/dom7.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/vue-tap.js"></script>
+<script type="text/javascript" src="../../script/aui-toast.js"></script>
+<script type="text/javascript">
+    var toast = new auiToast();
+    var vuedata = {
+        userid:false,
+        user:{},
+        codeImg:'',
+        groupTask:[]
+    };
+    var vm = new Vue({
+        el: '#app',
+        data: vuedata,
+    });
+    apiready = function() {
+        api.parseTapmode();
+
+        getUserData();
+
+    }
+    function getUserData(){
+        var userid = $api.getStorage('userid');
+        if(!userid){
+            return;
+        }
+        toast.loading({
+            title:'加载中'
+        })
+        var postData = {};
+        postData.userid = userid;
+        api.ajax({
+            url: BASE_URL+'/App/User/detail',
+            method: 'post',
+            data: {
+                values: postData
+            }
+        },function(ret, err){
+            toast.hide();
+            if (ret) {
+                vuedata.user = ret.data;
+                getSpreadData();
+            }
+        });
+
+    }
+    function getSpreadData(){
+        var postData = {};
+        postData.spreadNo = vuedata.user.spread_no;
+        api.ajax({
+            url: BASE_URL+'/App/User/createInviteImg',
+            method: 'post',
+            data: {
+                values: postData
+            }
+        },function(ret, err){
+            toast.hide();
+            if (ret) {
+                vuedata.codeImg = ret.data;
+            }
+        });
+    }
+
+</script>
+
+</html>

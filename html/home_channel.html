@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/swiper.css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+    <style>
+        body {
+            background: #323232;
+            color: #FFF;
+        }
+
+        .head {
+            padding: 0.75rem;
+        }
+
+        .head .head-ttl {
+            font-size: 0.75rem;
+            padding: 0.5rem 0;
+        }
+
+        .headSlider .swiper-slide {
+            width: 70%;
+        }
+
+        .headSlider .swiper-box {
+            background: #fff;
+            color: #000;
+            border-radius: 5px;
+        }
+
+        .headSlider .swiper-box img {
+            width: 3rem;
+            border-radius: 50%;
+            padding: 0.5rem;
+        }
+
+        .headSlider .swiper-box .ttl {
+            font-size: 0.8rem;
+        }
+
+        .headSlider .swiper-box .time {
+            font-size: 0.6rem;
+            color: #9B9B9B;
+        }
+
+        .headSlider .swiper-box .middle-box {
+            margin: 0 0.5rem;
+            padding: 0 0 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .headSlider .swiper-box .bottom-box .text {
+            width: 4rem;
+            height: 1.5rem;
+            background: #B28452;
+            border-radius: 1rem;
+            font-size: 0.6rem;
+            color: #FFF;
+            text-align: center;
+            line-height: 1.5rem;
+            margin: 0.5rem;
+        }
+
+        .topSlider {
+            padding: 0.75rem;
+        }
+
+        .topSlider .swiper-container {
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .topSlider .swiper-pagination {
+            position: static;
+        }
+
+        .topSlider .swiper-pagination-bullet {
+            width: 5px;
+            height: 5px;
+            margin: 0 5px;
+            background: #FFF;
+            opacity: 0.5;
+        }
+
+        .topSlider .swiper-pagination-bullet-active {
+            opacity: 1;
+        }
+
+        .aui-card-list {
+            background: none;
+        }
+
+        .aui-card-list-header {
+            color: #f2f2f2;
+        }
+
+        .text-bold {
+            font-weight: 500;
+        }
+
+        p {
+            color: #c5c5c5;
+        }
+
+        img.topic-icon {
+            width: 60px;
+            height: 60px;
+            display: block;
+            margin: 0 auto;
+            border-radius: 50%;
+        }
+
+        .actor-wrap {
+            background: none;
+            color: #ffffff;
+        }
+
+        .actor-wrap .aui-list-item-media {
+            width: 3rem !important;
+        }
+
+        .text-white {
+            color: #ffffff;
+        }
+
+        .actor-movie {
+            width: calc( 100vw - 0.5rem);
+            overflow: auto;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .actor-movie::-webkit-scrollbar {
+            display: none;
+        }
+
+        .actor-movie .movie-item {
+            width: 30vw;
+            display: inline-block;
+            font-size: 0.7rem;
+            text-align: center;
+        }
+
+        .actor-movie .movie-item img {
+            width: 100%;
+        }
+
+        .actor-border {
+            border-top: 1px solid #252525;
+        }
+
+        .adBox {
+            padding-top: 0.5rem;
+            border-top: solid 1px black;
+            border-bottom: solid 1px black;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class=" aui-hide">
+            <div class="head-ttl">2019必看专题</div>
+            <div class="headSlider">
+                <div class="swiper-container">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide" v-for="it in 5">
+                            <div class="swiper-box" tapmode onclick="openWin('topic_detail_win');">
+                                <div class="top-box aui-flex-col aui-flex-middle">
+                                    <div class="photo"><img src="../image/demo/s10.jpg" alt=""></div>
+                                    <div class="type flex-auto">
+                                        <div class="ttl">动作片</div>
+                                        <div class="time">00-00 00:00:00</div>
+                                    </div>
+                                </div>
+                                <div class="middle-box aui-border-b">
+                                    <div class="aui-ellipsis-1">动作片（Action Films)又称为惊险动作片(Action-Adventure Films)，</div>
+                                </div>
+                                <div class="bottom-box aui-flex-col aui-flex-right">
+                                    <div class="text">立即选片</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="topSlider" v-show="adData && adData.length">
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide" v-if="it.image" v-for="it in adData" v-tap="[openAd,it.url]"><img :src="it.image" width="100%" alt=""></div>
+                </div>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+        <div class="aui-card-list">
+            <div class="aui-card-list-header">
+                <div class="text-bold">热门专题</div>
+                <div class="more aui-font-size-12" tapmode onclick="openWin('video_topic_index_win');">更多<span class="aui-iconfont aui-icon-right aui-font-size-12"></span></div>
+            </div>
+            <ul class="aui-card-list-content aui-padded-t-10 aui-padded-b-10">
+                <div class="aui-row">
+                    <div class="aui-col aui-col-span-6 aui-text-center" v-for="(it,i) in topicDatas" v-tap="[openTopic,it.id,it.name]" v-if="i < 8">
+                        <img :src="it.cover" class="topic-icon">
+                        <p class="aui-font-size-12 aui-padded-t-10" v-text="it.name"></p>
+                    </div>
+                </div>
+            </ul>
+        </div>
+        <div class=" aui-card-list">
+            <div class="aui-card-list-header">
+                <div class="text-bold">人气演员</div>
+                <div class="more aui-font-size-12" tapmode onclick="openWin('video_actor_index_win');">更多<span class="aui-iconfont aui-icon-right aui-font-size-12"></span></div>
+            </div>
+
+            <template v-for="it in actorDatas">
+                <div class="adBox aui-margin-t-10 aui-margin-b-10" v-if="it.data_type && it.data_type == 'adv'">
+                    <div class="photo" v-tap="[openAd,it.url]"><img :src="it.image" width="100%" alt=""></div>
+                    <div class="name aui-py-5 aui-px-15" v-text="it.title"></div>
+                </div>
+                <div class="aui-card-list-content actor-border" v-else>
+                    <!-- <div class="aui-list actor-wrap" v-tap="[openActor,it.id,it.name]">
+                        <div class="  aui-list-item">
+                            <div class="aui-list-item-left">
+                                <div class="aui-list-item-media" style="width: 3rem; height: 3rem; border-radius: 50%; overflow: hidden;">
+                                    <img :src="it.avatar" tyle="height:100%;width:100%">
+                                </div>
+                            </div>
+                            <div class="aui-list-item-center">
+                                <div class="aui-list-item-title text-white aui-font-size-16 text-bold" v-text="it.name"></div>
+                                <div class="aui-list-item-subtitle aui-padded-t-10">
+                                    <div class="aui-ellipsis-2 text-white" v-text="it.content"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>  -->
+                    <div class="comFlexItem bg-none aui-px-15 aui-py-10"  v-tap="[openActor,it.id,it.name]">
+                        <div class="avatar" style="width: 3rem;height: 3rem;"><img :src="it.avatar"></div>
+                        <div class="flex-auto aui-padded-l-15">
+                            <div class="text-white aui-font-size-16 text-bold" v-text="it.name"></div>
+                            <div class="aui-ellipsis-2 text-white aui-font-size-14" v-text="it.content"></div>
+                        </div>
+                    </div>
+                    <div class=" aui-card-list-content">
+                        <dl class="aui-flex-col aui-flex-middle">
+                            <dd class="flex-auto">
+                                <div class="actor-movie aui-padded-r-15">
+                                    <div class="movie-item aui-padded-l-15" v-tap="[openDetail,item.id]" v-for="(item,i) in it.movies" v-if="i < 10">
+                                        <img :src="item.cover_big" v-if="item.cover_big" />
+                                        <img :src="item.cover_big" v-else />
+                                        <p class="aui-padded-t-10 aui-font-size-12 aui-ellipsis-1" v-text="item.name"></p>
+                                    </div>
+                                </div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+                <template v-if="it.adv">
+                    <div class="adBox aui-margin-t-10 aui-margin-b-10">
+                        <div class="photo" v-tap="[openAd,it.adv.url]"><img :src="it.adv.image" width="100%" alt=""></div>
+                        <div class="name aui-py-5 aui-px-10" v-text="it.adv.title"></div>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/dom7.js"></script>
+<script type="text/javascript" src="../script/swiper.min.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/vue-tap.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+    var vuedata = {
+        topicDatas: [],
+        actorDatas: [],
+        adData: []
+    };
+    var vm = new Vue({
+        el: '#app',
+        data: vuedata,
+        methods: {
+            openTopic: function(id, name) {
+                api.openWin({
+                    name: 'video_topic_list_win',
+                    url: 'video_topic_list_win.html',
+                    pageParam: {
+                        topicId: id,
+                        title: name
+                    }
+                });
+            },
+            openDetail: function(movieId) {
+                api.openWin({
+                    name: 'video_detail_win',
+                    url: 'video_detail_win.html',
+                    pageParam: {
+                        movieId: movieId
+                    }
+                });
+
+            },
+            openActor: function(id, name) {
+                api.openWin({
+                    name: 'video_actor_detail_win',
+                    url: 'video_actor_detail_win.html',
+                    pageParam: {
+                        actorId: id,
+                        name: name
+                    }
+                });
+            }
+        }
+    });
+
+
+    apiready = function() {
+        api.parseTapmode();
+        getTopicData();
+        getActorData();
+        getAd();
+        //下拉刷新
+        api.setCustomRefreshHeaderInfo({
+            bgColor: '#262626',
+            images: loading_img,
+            tips: {
+                pull: '你…你想干什么！要刷新数据就拉到位！',
+                threshold: '讨厌 快放开我 非礼呀！',
+                load: '正在刷新数据，请等待...'
+            }
+        }, function() {
+            getTopicData();
+            getActorData();
+            getAd();
+        });
+    };
+
+    function getTopicData() {
+        api.ajax({
+            url: BASE_URL + '/App/Movie/topicList',
+            method: 'post'
+        }, function(ret, err) {
+            api.refreshHeaderLoadDone();
+            if (ret) {
+                vuedata.topicDatas = ret.data;
+            }
+        });
+
+    }
+
+    function getActorData() {
+        api.ajax({
+            url: BASE_URL + '/App/Movie/actorList',
+            method: 'post'
+        }, function(ret, err) {
+            api.refreshHeaderLoadDone();
+            if (ret) {
+                vuedata.actorDatas = ret.data;
+                setTimeout(function() {
+                    new Swiper('.item-box-bottom .swiper-container', {
+                        slidesPerView: 3.5,
+                        spaceBetween: 10,
+                        slidesOffsetBefore: 10,
+                        slidesOffsetAfter: 10
+                    });
+                }, 100)
+            }
+        });
+    }
+
+
+    sliderInit();
+
+
+    function sliderInit() {
+        var mySwiper = new Swiper('.topSlider .swiper-container', {
+            loop: true,
+            speed: 600,
+            autoplay: {
+                delay: 5000,
+                stopOnLastSlide: false,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: '.swiper-pagination',
+            },
+            observer: true,
+            observeParents: true,
+            observeSlideChildren: true
+        })
+        new Swiper(' .headSlider .swiper-container', {
+            slidesPerView: 1.2,
+            spaceBetween: 10,
+            pagination: {
+                el: '',
+                clickable: true,
+            },
+            observer: true,
+            observeParents: true,
+            observeSlideChildren: true
+        });
+
+
+    }
+
+    function moreType() {
+        api.openWin({
+            name: 'more',
+            url: 'more.html',
+            pageParam: {
+                name: 'test'
+            }
+        })
+    }
+
+    //获取广告
+    function getAd() {
+        // api.ajax({
+        //     url: BASE_URL+'/App/Ad/index',
+        //     method: 'post',
+        //     data: {
+        //         values: {
+        //             pos_id: 3
+        //         }
+        //     }
+        // },function(ret, err){
+        //     if(ret && ret.code == 1){
+        //         vuedata.adData = ret.data;
+        //     }
+        // });
+
+    }
+</script>
+
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width" />
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/swiper.css">
+    <style>
+    textarea.aui-input {
+        background: #f5f5f5;
+        height: 6rem;
+        padding: 0.5rem
+    }
+    .aui-btn {
+        background: #c29762;
+    }
+    </style>
+</head>
+
+<body style="background:#fff">
+    <div id="app">
+        <div class="aui-card-list">
+            <div class="aui-card-list-content-padded">
+                <textarea class="aui-input" placeholder="请输入问题描述" v-model="content"></textarea>
+            </div>
+            <div class="aui-card-list-content-padded">
+                <div class="aui-btn aui-btn-block" v-tap="[feedbackAdd]">提交</div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript" src="../../script/dom7.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/vue-tap.js"></script>
+<script type="text/javascript" src="../../script/aui-toast.js"></script>
+<script type="text/javascript">
+        var toast = new auiToast();
+        var vuedata = {
+            content: ''
+        };
+        var vm = new Vue({
+            el: '#app',
+            data: vuedata,
+            methods: {
+                feedbackAdd:function(){
+                    var postData = {};
+                    postData.userid = $api.getStorage('userid');
+                    postData.content = vuedata.content;
+                    if(!postData.content){
+                        toast.fail({
+                            title:'请输入问题描述'
+                        })
+                        return;
+                    }
+                    api.ajax({
+                        url: BASE_URL+'/App/Movie/feedbackAdd',
+                        method: 'post',
+                        data: {
+                            values: postData
+                        }
+                    },function(ret, err){
+                        if (ret) {
+                            if(ret.code == 1){
+                                toast.success({
+                                    title:'提交成功'
+                                })
+                            }else{
+                                toast.fail({
+                                    title:'提交失败'
+                                })
+                            }
+                        }
+                    });
+
+
+                }
+            }
+        });
+    apiready = function () {
+        api.parseTapmode();
+    };
+</script>
+
+</html>

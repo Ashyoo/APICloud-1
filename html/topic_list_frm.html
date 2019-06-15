@@ -1,0 +1,101 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width" />
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../css/swiper.css">
+    <style>
+        .con-box {
+            background: #454545;
+            margin: 0.5rem;
+            border-radius: 0.25rem;
+        }
+
+        .box {
+            width: 25%;
+            padding: 0.5rem 0;
+            text-align: center;
+            color: #fff;
+            font-size: 0.65rem;
+        }
+
+        .box img {
+            width: 2rem;
+            border-radius: 50%;
+            margin: 0 auto 0.25rem;
+        }
+    </style>
+</head>
+
+<body style="background:#000;">
+    <div class="con-box aui-flex-col">
+        <div class="box" onclick="moreType()">
+            <div class="photo"><img src="../image/demo/s1.jpg" alt=""></div>
+            <div class="desc">angelababy</div>
+        </div>
+        <div class="box" onclick="moreType()">
+            <div class="photo"><img src="../image/demo/s2.jpg" alt=""></div>
+            <div class="desc">景甜</div>
+        </div>
+        <div class="box" onclick="moreType()">
+            <div class="photo"><img src="../image/demo/s3.jpg" alt=""></div>
+            <div class="desc">刘诗诗</div>
+        </div>
+        <div class="box" onclick="moreType()">
+            <div class="photo"><img src="../image/demo/s4.jpg" alt=""></div>
+            <div class="desc">杜江</div>
+        </div>
+        <div class="box" onclick="moreType()">
+            <div class="photo"><img src="../image/demo/s5.jpg" alt=""></div>
+            <div class="desc">毛晓彤</div>
+        </div>
+    </div>
+    <div class="con-box aui-flex-col">
+        <div class="box" onclick="moreType()">
+            <div class="photo"><img src="../image/demo/s6.jpg" alt=""></div>
+            <div class="desc">李小璐</div>
+        </div>
+        <div class="box" onclick="moreType()">
+            <div class="photo"><img src="../image/demo/s7.jpg" alt=""></div>
+            <div class="desc">林志颖</div>
+        </div>
+        <div class="box" onclick="moreType()">
+            <div class="photo"><img src="../image/demo/s8.jpg" alt=""></div>
+            <div class="desc">秦岚</div>
+        </div>
+        <div class="box" onclick="moreType()">
+            <div class="photo"><img src="../image/demo/s9.jpg" alt=""></div>
+            <div class="desc">张曼玉</div>
+        </div>
+        <div class="box" onclick="moreType()">
+            <div class="photo"><img src="../image/demo/s10.jpg" alt=""></div>
+            <div class="desc">戚薇</div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/dom7.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/vue-tap.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="../script/swiper.min.js"></script>
+<script type="text/javascript">
+    function moreType() {
+        api.openWin({
+            name: 'more',
+            url: 'more.html',
+            pageParam: {
+                name: 'test'
+            }
+        })
+    }
+</script>
+
+</html>

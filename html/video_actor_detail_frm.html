@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+    <style>
+        body {
+            background: #FFF;
+        }
+
+        .photoList [data-type="1"],
+        .photoList [data-type="2"] {
+            display: none;
+        }
+
+        .listType01 [data-type="1"] {
+            display: block;
+        }
+
+        .listType02 [data-type="2"] {
+            display: block;
+        }
+
+        .listType01 {
+            overflow: hidden;
+        }
+
+        .listType01 ul {
+            padding: 0.15rem;
+        }
+
+        .listType01 li {
+            display: block;
+            width: 50%;
+            padding: 0.15rem;
+        }
+
+        .listType01 li img {
+            width: 100%;
+            height: 30vw;
+            object-fit: cover;
+        }
+
+        .listType01 li .textBox {
+            padding: 0.25rem 0;
+            font-size: 0.6rem;
+        }
+
+        .listType02 li {
+            width: 100%;
+            padding: 0.25rem 0.5rem;
+        }
+
+        .listType02 .photo {
+            width: 7rem;
+            margin-right: 0.5rem;
+        }
+
+        .listType02 .photo img {
+            width: 100%;
+            height: 5rem;
+            object-fit: cover;
+        }
+
+        .listType02 .desc {
+            font-size: 0.6rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+
+        .listType02 .tagList {
+            margin-top: 0.25rem;
+        }
+
+        .listType02 .tagList .tag {
+            width: auto;
+            font-size: 0.6rem;
+            padding: 0 0.5rem;
+            border-radius: 100px;
+            line-height: 1rem;
+            background: #F7F4ED;
+            color: #DCB482;
+            margin-right: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
+        .actor-wrap {
+            background: #323232;
+        }
+        .actor-avatar {
+            border-radius: 50%;
+            border: 3px solid #ffcc00;
+            width: 70px !important;
+            height: 70px;
+        }
+        .actor-name {
+            color: #ffffff;
+            font-size: 1rem;
+            padding-left: 0.5rem;
+            top: 0.75rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="aui-card-list aui-padded-15 actor-wrap">
+            <div class="aui-card-list-content aui-padded-t-15 aui-padded-b-15">
+                <div class="aui-row">
+                    <div class="aui-col aui-col-span-5">
+                        <img :src="detail.avatar" class="actor-avatar" />
+                    </div>
+                    <div class="aui-col aui-col-span-10 actor-name" v-text="detail.name"></div>
+                </div>
+            </div>
+        </div>
+        <div class="aui-card-list">
+            <div class="aui-card-list-footer" v-html="detail.content"></div>
+        </div>
+        <div class="photoList " :class="{'listType01' : listMode == 1,'listType02' : listMode == 2 }">
+            <ul class="aui-flex-col">
+                <li class="aui-flex-col aui-flex-middle" v-tap="[openDetail,it.id]" v-for="it in rows">
+                    <div class="photo"><img :src="it.cover" alt=""></div>
+                    <div class="textBox flex-auto">
+                        <div class="ttl aui-ellipsis" v-text="it.name"></div>
+                        <div data-type="2" v-if="it.classify_jq_ids">
+                            <div class="tagList aui-flex-col">
+                                <div class="tag" v-for="item in it.classify_jq_ids" v-text="item.name"></div>
+                            </div>
+                        </div>
+                        <div class="desc" data-type="2"><span v-text="it.play_count"></span>次播放</div>
+                        <div class="desc" data-type="2">评分<span v-text="it.score"></span></div>
+                    </div>
+
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/dom7.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/vue-tap.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="../script/aui-toast.js"></script>
+<script type="text/javascript">
+    var toast = new auiToast();
+    var pageNo = 1,pageSize = 50;
+    // var sort = 'default';
+    var sectionId;
+    var vuedata = {
+        sort:'default',
+        name:'',
+        actorId:0,
+        listMode:1,
+        detail:{},
+        rows:[]
+    };
+    var vm = new Vue({
+        el: '#app',
+        data: vuedata,
+        methods:{
+            openDetail:function(movieId){
+                api.openWin({
+                    name: 'video_detail_win',
+                    url: 'video_detail_win.html',
+                    reload:true,
+                    slidBackEnabled:false,
+                    pageParam: {
+                        movieId: movieId
+                    }
+                });
+
+            },
+        }
+    });
+    var loadStaus = false;
+    apiready = function() {
+        api.parseTapmode();
+        vuedata.actorId = api.pageParam.actorId;
+        vuedata.name = api.pageParam.name;
+        // api.addEventListener({
+        //     name: 'scrolltobottom'
+        // }, function(ret, err){
+        //     if(loadStaus){
+        //         getData();
+        //     }
+        // });
+        // api.refreshHeaderLoading();
+        getData();
+        // api.addEventListener({
+        //     name: 'refrshMovieListData'
+        // }, function(ret, err){
+        //     if( ret ){
+        //         api.refreshHeaderLoading();
+        //         pageNo = 1;
+        //         vuedata.rows = [];
+        //     }
+        // });
+
+        //下拉刷新
+        // api.setCustomRefreshHeaderInfo({
+        //     bgColor: '#262626',
+        //     images: loading_img,
+        //     tips: {
+        //         pull: '你…你想干什么！要刷新数据就拉到位！',
+        //         threshold: '讨厌 快放开我 非礼呀！',
+        //         load: '正在刷新数据，请等待...'
+        //     }
+        // }, function() {
+        //     pageNo = 1;
+        //     vuedata.rows = [];
+        //     getData();
+        // });
+    };
+    function getData(){
+        toast.loading({
+            title:'加载中'
+        })
+        var postData = {};
+        postData.actorId = vuedata.actorId;
+        postData.name = vuedata.name;
+        postData.pageNo = pageNo;
+        postData.pageSize = pageSize;
+        // alert(postData.actorId)
+        api.ajax({
+            url: BASE_URL+'/App/Movie/actorDetail',
+            method: 'post',
+            data: {
+                values: postData
+            }
+        },function(ret, err){
+            toast.hide();
+            if (ret) {
+                if(ret.data){
+
+                    if(ret.data.length < pageSize){
+                        loadStaus = false;
+                    }else{
+                        pageNo += 1;
+                    }
+                    vuedata.detail = ret.data.detail;
+                    vuedata.rows = vuedata.rows.concat(ret.data.movies)
+                }else{
+                    loadStaus = false;
+                }
+                api.refreshHeaderLoadDone();
+
+            }
+        });
+
+    }
+
+
+    //切换列表样式
+    function changeListMode(i) {
+        vuedata.listMode = i;
+    }
+</script>
+
+</html>

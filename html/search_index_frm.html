@@ -1,0 +1,165 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width" />
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+    <style>
+        .photoList {
+            overflow: hidden;
+        }
+
+        .photoList ul {
+            margin: 0 0.25rem;
+        }
+
+        .photoList li {
+            width: 50%;
+            padding: 0.25rem;
+        }
+
+        .photoList li img {
+            width: 100%;
+            height: 30vw;
+            object-fit: cover;
+        }
+
+        .photoList li .ttl {
+            font-size: 0.6rem;
+            line-height: 2rem;
+            padding: 0 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="aui-list">
+            <div class="aui-list-item" v-for="(it,i) in searchHistory">
+                <div class="aui-list-item-left">
+                    <i class="aui-iconfont aui-icon-date"></i>
+                </div>
+                <div class="aui-list-item-center" v-tap="[doSearch,it]" v-text="it"></div>
+                <div class="aui-list-item-right" v-tap="[del,i]">
+                    <i class="aui-iconfont aui-icon-close"></i>
+                </div>
+            </div>
+        </div>
+        <div class="photoList">
+            <ul class="aui-flex-col">
+                <li v-for="it in rows" v-tap="[openDetail,it.id]">
+                    <img :src="it.cover" alt="">
+                    <div class="ttl aui-ellipsis-1" v-text="it.name"></div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/dom7.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/vue-tap.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="../script/aui-toast.js"></script>
+<script type="text/javascript">
+    var toast = new auiToast();
+    var vuedata = {
+        keywords:'',
+        rows:[],
+        searchHistory:[]
+    };
+    var vm = new Vue({
+        el: '#app',
+        data: vuedata,
+        methods:{
+            doSearch:function(text){
+                doSearch(text)
+            },
+            del:function(i){
+                vuedata.searchHistory.splice(i,1);
+                $api.setStorage('searchHistory',JSON.stringify(vuedata.searchHistory));
+            },
+            openDetail:function(movieId){
+                api.openWin({
+                    name: 'video_detail_win',
+                    url: 'video_detail_win.html',
+                    reload:true,
+                    slidBackEnabled:false,
+                    pageParam: {
+                        movieId: movieId
+                    }
+                });
+
+            },
+        }
+    });
+    var loadStaus = false;
+    var pageNo = 1,pageSize = 20;
+    apiready = function() {
+       api.parseTapmode();
+       api.addEventListener({
+           name: 'scrolltobottom'
+       }, function(ret, err){
+           if(loadStaus){
+               doSearch();
+           }
+       });
+       var searchHistory = $api.getStorage('searchHistory');
+       if(searchHistory){
+           vuedata.searchHistory = JSON.parse(searchHistory);
+       }
+
+    };
+    function doSearch(keywords){
+        if(keywords){
+            vuedata.keywords = keywords;
+
+            vuedata.searchHistory.push(keywords)
+            $api.setStorage('searchHistory',JSON.stringify(vuedata.searchHistory));
+        }
+        toast.loading({
+            title:'加载中'
+        })
+
+        var postData = {};
+        postData.keywords = vuedata.keywords;
+        postData.pageNo = pageNo;
+        postData.pageSize = pageSize;
+        api.ajax({
+            url: BASE_URL+'/App/Movie/movieList',
+            method: 'post',
+            data: {
+                values: postData
+            }
+        },function(ret, err){
+            toast.hide();
+            if (ret) {
+                if(ret.data){
+                    if(!ret.data.length && pageNo == 1){
+                        toast.fail({
+                            title:'暂无数据'
+                        })
+                    }
+                    if(ret.data.length < pageSize){
+                        loadStaus = false;
+                    }else{
+                        pageNo += 1;
+                    }
+                    vuedata.rows = vuedata.rows.concat(ret.data)
+                }else{
+                    loadStaus = false;
+                }
+
+            }
+        });
+
+    }
+
+</script>
+
+</html>

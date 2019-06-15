@@ -1,0 +1,311 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width" />
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/swiper.css">
+    <style>
+        .account{
+            background: #C49C69;
+            margin: 0.5rem 0.25rem;
+            border-radius: 0.25rem;
+            margin-top:2rem;
+        }
+        .account .top{
+            padding: 0.5rem;
+        }
+        .account .top .photo{
+            width: 3rem;
+        }
+        .account .top .top-mid{
+            padding-left: 0.25rem;
+            margin-right: auto;
+        }
+        .account .top .top-mid .number{
+            font-size: 0.75rem;
+            color: #AD7D45;
+        }
+        .account .top .top-mid .yaoqing{
+            font-size: 0.6rem;
+            color: #B78B58;
+        }
+        .account .top .code{
+            width: 4.5rem;
+        }
+        .account .bottom{
+            padding: 0.5rem 1rem;
+        }
+        .account .bottom .progress .level{
+            font-size: 0.8rem;
+            color: #B98C56;
+        }
+        .account .bottom .progress .text{
+            font-size: 0.6rem;
+            color: #F1F1F1;
+        }
+        .account .aui-progress-bar{
+            background: #DCB481;
+        }
+        #number{
+            border: 2px #F1F1F1 solid;
+            border-radius: 0.25rem;
+            margin: 1rem 0.5rem 0;
+        }
+        #number .box .today{
+            width: 50%;
+            text-align: center;
+            padding: 1rem 0;
+            border-right: 1px #F1F1F1 solid;
+        }
+        #number .box .today .times{
+            font-size: 1.2rem;
+            font-weight:bold;
+            color: #E9BB54;
+        }
+        #number .box .today .text{
+            font-size: 0.6rem;
+        }
+        #number .box .rest{
+            width: 50%;
+            text-align: center;
+            padding: 1rem 0;
+        }
+        #number .box .rest .times{
+            font-size: 1.2rem;
+            font-weight:bold;
+            color: #F65759;
+        }
+        #number .box .rest .text{
+            font-size: 0.6rem;
+        }
+        .task{
+            border: 2px #F1F1F1 solid;
+            border-radius: 0.25rem;
+            margin: 1rem 0.5rem 0;
+            padding-left: 0.5rem;
+        }
+        .task .ttl{
+            font-size: 0.75rem;
+            color: #AD7D45;
+            padding: 0.5rem 0;
+        }
+        .task .text{
+            font-size: 0.6rem;
+            padding-bottom: 0.5rem;
+        }
+        .extension-task{
+            border: 2px #F1F1F1 solid;
+            border-radius: 0.25rem;
+            margin: 1rem 0.5rem 0;
+            padding-left: 0.5rem;
+        }
+        .extension-task .ttl{
+            font-size: 0.75rem;
+            color: #AD7D45;
+            padding: 0.5rem 0;
+        }
+        .extension-task .text{
+            font-size: 0.6rem;
+            padding-bottom: 0.5rem;
+        }
+        .extension-task .box{
+            margin-bottom: 0.5rem;
+        }
+        .extension-task .box .photo{
+            width: 3rem;
+            height: 3rem;
+            background: #FBF3DE;
+            border-radius: 0.5rem;
+        }
+        .extension-task .box img{
+            width: 2.5rem;
+            height:2.5rem;
+        }
+        .extension-task .box .right{
+            padding-left: 0.5rem;
+        }
+        .extension-task .box .topic{
+            font-size: 0.75rem;
+            color: #AD7D45;
+        }
+        .extension-task .box .desc{
+            font-size: 0.6rem;
+        }
+        .extension-task .box span{
+            color: #AD7D45;
+        }
+        .welfare-task{
+            border: 2px #F1F1F1 solid;
+            border-radius: 0.25rem;
+            margin: 1rem 0.5rem;
+        }
+        .welfare-task .ttl{
+            font-size: 0.75rem;
+            color: #AD7D45;
+            padding: 0.5rem;
+        }
+        .welfare-task .box{
+            border: 1px #FDEEDB solid;
+            margin: 0.5rem;
+            border-radius: 0.25rem;
+        }
+        .welfare-task .box .top{
+            background: #FDEEDB;
+            padding: 0.5rem;
+            font-size: 0.75rem;
+            color: #AD7D45;
+        }
+        .welfare-task .box .bottom{
+            padding: 0.5rem;
+            font-size: 0.6rem;
+        }
+        .welfare-task .box span{
+            color: #AD7D45;
+        }
+        #mycanvas {
+          width:100%;
+          background:black;
+          border-radius:0 0 50% 50%;
+          position:fixed;
+          top:0;
+          left:0;
+          z-index:-1;
+            /*position: absolute;
+            left: 0;
+            top: 0;
+            -webkit-transform: scale(0.5);
+            transform: scale(0.5);
+            -webkit-transform-origin: left top;
+            transform-origin: left top;*/
+        }
+        .bg{
+          background:white;
+        }
+    </style>
+</head>
+
+<body style="background:#fff">
+      <canvas id="mycanvas"></canvas>
+    <div class="account">
+        <div class="top aui-flex-col">
+            <div class="photo">
+                <img src="../../image/common/avatar.png" alt="">
+            </div>
+            <div class="top-mid aui-flex-row aui-flex-middle">
+                <div class="number">12345678900</div>
+                <div class="yaoqing">我的邀请码：ZXC123</div>
+            </div>
+            <div class="code aui-flex-col aui-flex-middle"><img src="../../image/common/icon_er.png" alt=""></div>
+        </div>
+        <div class="bottom">
+                <div class="progress aui-flex-col aui-flex-between">
+                    <div class="level">LV0</div>
+                    <div class="text">距离下一等级还差1人</div>
+                    <div class="level">LV1</div>
+                </div>
+                <div class="aui-progress aui-progress-xxs">
+                    <div class="aui-progress-bar" style="width: 60%;"></div>
+                </div>
+        </div>
+    </div>
+    <div id="number">
+        <div  class="box aui-flex-col bg">
+            <div class="today">
+                <div class="times">9</div>
+                <div class="text">今日已观影次数</div>
+            </div>
+            <div class="rest">
+                    <div class="times">9</div>
+                    <div class="text">剩余观影次数</div>
+            </div>
+        </div>
+    </div>
+    <div class="task bg">
+        <div class="ttl">每日任务</div>
+        <div class="text">每日点击广告，当日观影次数+999，次数不累计</div>
+    </div>
+    <div class="extension-task bg">
+        <div class="ttl">推广任务</div>
+        <div class="text">推广给好友成功下载app并打开或注册时好友填写你的邀请码，可以永久增加每日观影次数及缓存次数。每日缓存次数同推广人数。</div>
+        <div class="box aui-flex-col aui-flex-middle">
+            <div class="photo aui-flex-col aui-flex-center aui-flex-middle"><img src="../../image/common/ic_level1_s.png" alt=""></div>
+            <div class="right">
+                <div class="topic">入门徽章</div>
+                <div class="desc">推广<span>1</span>人-每日观影次数<span>+2</span>，缓存次数<span>+1</span></div>
+            </div>
+        </div>
+        <div class="box aui-flex-col aui-flex-middle">
+                <div class="photo aui-flex-col aui-flex-center aui-flex-middle"><img src="../../image/common/ic_level2_s.png" alt=""></div>
+                <div class="right">
+                    <div class="topic">进阶徽章</div>
+                    <div class="desc">推广<span>1</span>人-每日观影次数<span>+2</span>，缓存次数<span>+1</span></div>
+                </div>
+        </div>
+        <div class="box aui-flex-col aui-flex-middle">
+                <div class="photo aui-flex-col aui-flex-center aui-flex-middle"><img src="../../image/common/ic_level3_s.png" alt=""></div>
+                <div class="right">
+                    <div class="topic">达人徽章</div>
+                    <div class="desc">推广<span>10</span>人-每日观影次数<span>+30</span>，缓存次数<span>+10</span></div>
+                </div>
+        </div>
+        <div class="box aui-flex-col aui-flex-middle">
+                <div class="photo aui-flex-col aui-flex-center aui-flex-middle"><img src="../../image/common/ic_level4_s.png" alt=""></div>
+                <div class="right">
+                    <div class="topic">专家徽章</div>
+                    <div class="desc">推广<span>30</span>人-每日观影次数<span>+50</span>，缓存次数<span>+30</span></div>
+                </div>
+        </div>
+        <div class="box aui-flex-col aui-flex-middle">
+                <div class="photo aui-flex-col aui-flex-center aui-flex-middle"><img src="../../image/common/ic_level5_s.png" alt=""></div>
+                <div class="right">
+                    <div class="topic">教授徽章</div>
+                    <div class="desc">推广<span>50</span>人-每日观影次数<span>+无限</span>，缓存次数<span>+50</span></div>
+                </div>
+        </div>
+    </div>
+    <div class="welfare-task bg">
+        <div class="ttl">福利任务1</div>
+        <div class="box">
+            <div class="top">1.用户名注册</div>
+            <div class="bottom">
+                <p>用户名注册，每日观影次数<span>+2</span></p>
+                <p>用户名注册并绑定手机号，每日观影次数<span>+4</span></p>
+            </div>
+        </div>
+        <div class="box">
+                <div class="top">2.手机号注册</div>
+                <div class="bottom">
+                    手机号注册，每日观影次数<span>+4</span>，（*为防止app被封丢失您的推广信息，可通过注册账号绑定推广人数，强烈建议注册*）
+                </div>
+        </div>
+        <div class="box">
+                <div class="top">3.填写邀请码</div>
+                <div class="bottom">
+                    注册并填写好友邀请码，每日观影次数<span>+2</span>
+                </div>
+        </div>
+        <div class="box">
+                <div class="top">4.保存二维码</div>
+                <div class="bottom">
+                        保存推广二维码，每日观影次数<span>+1</span>
+                </div>
+        </div>
+</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/dom7.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/vue-tap.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript" src="../../script/swiper.min.js"></script>
+<script type="text/javascript">
+</script>
+
+</html>

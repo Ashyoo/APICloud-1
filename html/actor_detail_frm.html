@@ -1,0 +1,125 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width" />
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+    <style>
+        .topBox {
+            background: #2D2B38;
+            height: 6rem;
+            padding: 0 1rem;
+            color: #fff;
+            font-size: 0.8rem;
+        }
+        .topBox .avatar {
+            margin-right: 0.75rem;
+            width: 4rem;
+            height: 4rem;
+        }
+        .topBox .num {
+            display: inline-block;
+            padding: 0 0.5rem;
+            font-size: 0.6rem;
+            line-height: 1rem;
+        }
+        .comSec .title {
+            font-size: 1rem;
+        }
+        .comSec .desc {
+            color: #666;
+            font-size: 0.7rem;
+            padding-bottom: 0.75rem;
+        }
+        .filterItem {
+            width: auto;
+            font-size: 0.7rem;
+            padding: 0 0.75rem;
+            border-radius: 100px;
+            line-height: 1.4rem;
+        }
+        .filterItem.active {
+            background: #F7F4ED;
+            color: #DCB482;
+        }
+        .photoList {
+            overflow: hidden;
+        }
+
+        .photoList ul {
+            margin: 0.25rem -0.25rem 0;
+        }
+
+        .photoList li {
+            width: 50%;
+            padding: 0.25rem;
+        }
+
+        .photoList li img {
+            width: 100%;
+            height: 30vw;
+            object-fit: cover;
+        }
+
+        .photoList li .ttl {
+            font-size: 0.6rem;
+            line-height: 2rem;
+            padding: 0 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="topBox aui-flex-col aui-flex-middle">
+            <div class="avatar"><img src="../image/demo/s1.jpg" alt=""></div>
+            <div class="flex-auto">
+                <div class="name aui-margin-b-5">angelababy</div>
+                <div class="num bg-main radius-btn">0部影片</div>
+            </div>
+        </div>
+        <div class="comSec">
+            <div class="comFlexItem">
+                <div class="title">简介</div>
+            </div>
+            <div class="desc">Angelababy（杨颖），1989年2月28日出生于上海市，华语影视女演员、时尚模特。2003年以模特身份出道</div>
+        </div>
+        <div class="comSec">
+            <div class="comFlexItem aui-border-b">
+                <div class="title flex-auto">相关影集</div>
+                <div class="filterItem">最多播放</div>
+                <div class="filterItem active">最近更新</div>
+            </div>
+            <div class="photoList">
+                <ul class="aui-flex-col">
+                    <li v-for="it in 4" tapmode onclick="openWin('video_detail_win');">
+                        <img src="../image/demo/s1.jpg" alt="">
+                        <div class="ttl aui-ellipsis-1">《奔跑吧兄弟》</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/dom7.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/vue-tap.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+    var vuedata = {};
+    var vm = new Vue({
+        el: '#app',
+        data: vuedata,
+        methods: {}
+    });
+    apiready = function() {
+    };
+</script>
+
+</html>
